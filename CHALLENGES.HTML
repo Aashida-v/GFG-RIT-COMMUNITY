@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice - GFG Student Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Inter', 'sans-serif'] },
+                    colors: {
+                        'gfg': {
+                            50: '#f0fdf4', 100: '#dcfce7',
+                            500: '#22c55e', 600: '#16a34a', 700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        }
+
+        .navbar-link { transition: all 0.3s ease; }
+        .navbar-link:hover { color: #16a34a !important; transform: translateY(-2px); }
+
+        .nav-active {
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 2px;
+        }
+
+        /* Filter Pills */
+        .filter-pill {
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+        }
+        .filter-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+        .filter-pill.active {
+            background: #16a34a !important;
+            color: white !important;
+            border-color: #15803d !important;
+            box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+        }
+
+        /* Card */
+        .problem-card {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .problem-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.18);
+        }
+
+        /* Difficulty badges */
+        .badge-easy   { background:#dcfce7; color:#15803d; }
+        .badge-medium { background:#fef9c3; color:#854d0e; }
+        .badge-hard   { background:#fee2e2; color:#991b1b; }
+
+        /* Search bar focus ring */
+        .search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(22,163,74,0.3); }
+
+        /* Section heading underline */
+        .section-heading::after {
+            content: '';
+            display: block;
+            width: 56px; height: 4px;
+            background: linear-gradient(90deg,#10b981,#059669);
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        /* Progress bar */
+        .progress-bar { transition: width 1s ease; }
+
+        /* Stats card glow */
+        .stat-card { transition: all 0.3s ease; }
+        .stat-card:hover { box-shadow: 0 8px 30px rgba(22,163,74,0.2); transform: translateY(-4px); }
+
+        /* Floating blobs in hero */
+        @keyframes blob {
+            0%,100% { border-radius:60% 40% 30% 70%/60% 30% 70% 40%; }
+            50%      { border-radius:30% 60% 70% 40%/50% 60% 30% 60%; }
+        }
+        .blob { animation: blob 8s ease-in-out infinite; }
+        .blob2 { animation: blob 10s ease-in-out infinite reverse; }
+
+        /* Hide/show problem cards */
+        .problem-card.hidden-card { display: none; }
+
+        /* Smooth fade-in for cards */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.4s ease forwards; }
+
+        /* Tooltip */
+        .tooltip { position: relative; }
+        .tooltip .tip {
+            display: none; position: absolute; bottom: 130%; left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937; color: white;
+            padding: 4px 10px; border-radius: 8px;
+            font-size: 12px; white-space: nowrap;
+            pointer-events: none;
+        }
+        .tooltip:hover .tip { display: block; }
+        /* GFG custom green colors */
+.text-gfg-green { color: #00C851; }
+.bg-gfg-green { background-color: #00C851; }
+.border-gfg-green { border-color: #00C851; }
+
+.hover\:text-gfg-green:hover { color: #00C851; }
+.hover\:bg-gfg-green:hover { background-color: #00C851; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+
+<!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-code text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">GFG RIT</h1>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="HOME.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Home</a>
+                <a href="CHALLENGES.HTML" class="px-4 py-3 text-green-600 font-semibold transition-all duration-300 rounded-xl bg-green-50 shadow-sm border border-green-200 nav-active">Challenges</a>
+                <a href="RESOURCES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Resources</a>
+                <a href="EVENTS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Events</a>
+                <a href="BLOGS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Blogs</a>
+                <a href="PROFILE.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">My Profile</a>
+                <a href="LOGIN.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Logout</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars text-xl text-gray-700"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden pb-6 space-y-2 border-t border-gray-200 pt-4">
+            <a href="HOME.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Home</a>
+            <a href="CHALLENGES.HTML" class="block px-4 py-3 bg-green-50 text-green-600 font-semibold rounded-xl border border-green-200 shadow-sm">Challenges</a>
+            <a href="RESOURCES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Resources</a>
+            <a href="EVENTS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Events</a>
+            <a href="BLOGS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Blogs</a>
+            <a href="PROFILE.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">My Profile</a>
+            <a href="LOGIN.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="gradient-bg py-28 relative overflow-hidden">
+    <!-- Blobs -->
+    <div class="absolute top-10 left-16 w-64 h-64 bg-white/10 blob rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 right-16 w-80 h-80 bg-white/5 blob2 rounded-full blur-2xl"></div>
+    <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-emerald-300/10 blob rounded-full blur-3xl"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-semibold mb-6 border border-white/25">
+            <i class="fas fa-fire text-orange-300"></i>
+            Over 500+ Problems Available
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight drop-shadow-2xl">
+            Practice &amp; <span class="text-green-200">Master</span><br>Coding Problems
+        </h1>
+        <p class="text-xl md:text-2xl text-green-100/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Filter by language, data structure, company, or difficulty — and start solving right now.
+        </p>
+        <!-- Search Bar -->
+        <div class="max-w-xl mx-auto relative">
+            <input id="search-input" type="text" placeholder="Search problems, topics, companies..."
+                class="search-input w-full pl-14 pr-6 py-5 rounded-2xl text-gray-800 font-medium text-lg bg-white/95 shadow-2xl placeholder-gray-400 border-2 border-transparent focus:border-green-400 transition-all">
+            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ STATS BAR ═══════════════════════ -->
+<section class="bg-white border-b border-gray-200 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="stat-card text-center p-5 rounded-2xl bg-green-50 border border-green-100 cursor-default">
+                <div class="text-3xl font-bold text-green-600">248</div>
+                <div class="text-sm text-gray-500 mt-1 font-medium"><i class="fas fa-smile-beam mr-1 text-green-400"></i>Easy</div>
+            </div>
+            <div class="stat-card text-center p-5 rounded-2xl bg-yellow-50 border border-yellow-100 cursor-default">
+                <div class="text-3xl font-bold text-yellow-600">185</div>
+                <div class="text-sm text-gray-500 mt-1 font-medium"><i class="fas fa-meh mr-1 text-yellow-400"></i>Medium</div>
+            </div>
+            <div class="stat-card text-center p-5 rounded-2xl bg-red-50 border border-red-100 cursor-default">
+                <div class="text-3xl font-bold text-red-600">92</div>
+                <div class="text-sm text-gray-500 mt-1 font-medium"><i class="fas fa-fire mr-1 text-red-400"></i>Hard</div>
+            </div>
+            <div class="stat-card text-center p-5 rounded-2xl bg-blue-50 border border-blue-100 cursor-default">
+                <div class="text-3xl font-bold text-blue-600">525</div>
+                <div class="text-sm text-gray-500 mt-1 font-medium"><i class="fas fa-list mr-1 text-blue-400"></i>Total Problems</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ CHALLENGE OF THE DAY ═══════════════════════ -->
+<section class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 md:p-10 overflow-hidden shadow-2xl border border-gray-700">
+        <!-- Background glow -->
+        <div class="absolute top-0 left-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <!-- Left: Badge + Title -->
+            <div class="flex items-start md:items-center gap-5">
+                <!-- Icon -->
+                <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                    <i class="fas fa-bolt text-white text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="inline-flex items-center gap-1.5 bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase">
+                            <i class="fas fa-star text-yellow-300 text-xs"></i> Challenge of the Day
+                        </span>
+                        <span class="text-gray-500 text-xs font-medium" id="cotd-date"></span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mt-1">Trapping Rain Water</h3>
+                    <div class="flex flex-wrap items-center gap-3 mt-2">
+                        <span class="badge-hard px-3 py-1 rounded-lg text-xs font-bold"><i class="fas fa-fire text-xs mr-1"></i>Hard</span>
+                        <span class="text-gray-400 text-sm"><i class="fas fa-building mr-1.5 text-gray-500"></i>Amazon, Google</span>
+                        <span class="text-gray-400 text-sm"><i class="fas fa-sitemap mr-1.5 text-gray-500"></i>Array · Two Pointer</span>
+                        <span class="text-gray-400 text-sm"><i class="fas fa-check-circle mr-1.5 text-green-400"></i>47% Acceptance</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Solve button + streak -->
+            <div class="flex flex-col items-start md:items-end gap-3 flex-shrink-0">
+                <button class="group px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-base rounded-2xl shadow-lg shadow-green-500/30 hover:shadow-green-400/50 transition-all duration-300 hover:scale-105 flex items-center gap-3">
+                    <i class="fas fa-play text-sm"></i>
+                    Solve Now
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <i class="fas fa-fire text-orange-400"></i>
+                    <span><span class="text-orange-400 font-bold">1,284</span> students solved today</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ FILTERS + PROBLEMS ═══════════════════════ -->
+<section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row gap-10">
+
+        <!-- ── FILTER SIDEBAR ── -->
+        <aside class="lg:w-72 flex-shrink-0 lg:sticky lg:top-20 lg:self-start" style="max-height: calc(100vh - 90px);">
+            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-7 overflow-y-auto" style="max-height: calc(100vh - 90px); scrollbar-width: thin; scrollbar-color: #16a34a #f0fdf4;">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-sliders-h mr-2 text-green-500"></i>Filters</h2>
+                    <button id="clear-filters" class="text-sm text-red-500 hover:text-red-700 font-semibold transition-colors">
+                        <i class="fas fa-times mr-1"></i>Clear All
+                    </button>
+                </div>
+
+                <!-- Active Filter Count -->
+                <div id="active-filter-banner" class="hidden mb-5 bg-green-50 border border-green-200 rounded-xl px-4 py-2 text-sm text-green-700 font-medium">
+                    <i class="fas fa-filter mr-1"></i> <span id="active-count">0</span> filter(s) active
+                </div>
+
+                <!-- ── 1. PROGRAMMING LANGUAGE ── -->
+                <div class="mb-7">
+                    <h3 class="section-heading text-sm font-bold text-gray-700 uppercase tracking-widest mb-4">
+                        <i class="fas fa-terminal mr-2 text-blue-500"></i>Language
+                    </h3>
+                    <div class="flex flex-wrap gap-2" id="lang-filters">
+                        <span data-filter="lang" data-value="python"   class="filter-pill px-3 py-1.5 rounded-xl bg-blue-50   text-blue-700   text-sm font-semibold border-blue-100"><i class="fab fa-python mr-1"></i>Python</span>
+                        <span data-filter="lang" data-value="java"     class="filter-pill px-3 py-1.5 rounded-xl bg-orange-50 text-orange-700 text-sm font-semibold border-orange-100"><i class="fas fa-coffee mr-1"></i>Java</span>
+                        <span data-filter="lang" data-value="cpp"      class="filter-pill px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 text-sm font-semibold border-purple-100"><i class="fas fa-code mr-1"></i>C++</span>
+                        <span data-filter="lang" data-value="c"        class="filter-pill px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-sm font-semibold border-indigo-100"><i class="fas fa-code mr-1"></i>C</span>
+                        <span data-filter="lang" data-value="js"       class="filter-pill px-3 py-1.5 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-semibold border-yellow-100"><i class="fab fa-js mr-1"></i>JavaScript</span>
+                        <span data-filter="lang" data-value="go"       class="filter-pill px-3 py-1.5 rounded-xl bg-cyan-50   text-cyan-700   text-sm font-semibold border-cyan-100"><i class="fas fa-bolt mr-1"></i>Go</span>
+                    </div>
+                </div>
+
+                <!-- ── 2. DS & ALGORITHMS ── -->
+                <div class="mb-7">
+                    <h3 class="section-heading text-sm font-bold text-gray-700 uppercase tracking-widest mb-4">
+                        <i class="fas fa-sitemap mr-2 text-green-500"></i>DS &amp; Algorithms
+                    </h3>
+                    <div class="flex flex-wrap gap-2" id="dsa-filters">
+                        <span data-filter="dsa" data-value="array"      class="filter-pill px-3 py-1.5 rounded-xl bg-green-50  text-green-700  text-sm font-semibold border-green-100">Array</span>
+                        <span data-filter="dsa" data-value="string"     class="filter-pill px-3 py-1.5 rounded-xl bg-teal-50   text-teal-700   text-sm font-semibold border-teal-100">String</span>
+                        <span data-filter="dsa" data-value="linkedlist" class="filter-pill px-3 py-1.5 rounded-xl bg-rose-50   text-rose-700   text-sm font-semibold border-rose-100">Linked List</span>
+                        <span data-filter="dsa" data-value="tree"       class="filter-pill px-3 py-1.5 rounded-xl bg-amber-50  text-amber-700  text-sm font-semibold border-amber-100">Tree</span>
+                        <span data-filter="dsa" data-value="graph"      class="filter-pill px-3 py-1.5 rounded-xl bg-violet-50 text-violet-700 text-sm font-semibold border-violet-100">Graph</span>
+                        <span data-filter="dsa" data-value="dp"         class="filter-pill px-3 py-1.5 rounded-xl bg-pink-50   text-pink-700   text-sm font-semibold border-pink-100">Dynamic Prog.</span>
+                        <span data-filter="dsa" data-value="sorting"    class="filter-pill px-3 py-1.5 rounded-xl bg-lime-50   text-lime-700   text-sm font-semibold border-lime-100">Sorting</span>
+                        <span data-filter="dsa" data-value="searching"  class="filter-pill px-3 py-1.5 rounded-xl bg-sky-50    text-sky-700    text-sm font-semibold border-sky-100">Searching</span>
+                        <span data-filter="dsa" data-value="stack"      class="filter-pill px-3 py-1.5 rounded-xl bg-orange-50 text-orange-700 text-sm font-semibold border-orange-100">Stack / Queue</span>
+                        <span data-filter="dsa" data-value="hashing"    class="filter-pill px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-sm font-semibold border-indigo-100">Hashing</span>
+                        <span data-filter="dsa" data-value="recursion"  class="filter-pill px-3 py-1.5 rounded-xl bg-fuchsia-50 text-fuchsia-700 text-sm font-semibold border-fuchsia-100">Recursion</span>
+                        <span data-filter="dsa" data-value="greedy"     class="filter-pill px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 text-sm font-semibold border-emerald-100">Greedy</span>
+                    </div>
+                </div>
+
+                <!-- ── 3. COMPANY ── -->
+                <div class="mb-7">
+                    <h3 class="section-heading text-sm font-bold text-gray-700 uppercase tracking-widest mb-4">
+                        <i class="fas fa-building mr-2 text-purple-500"></i>Company
+                    </h3>
+                    <div class="flex flex-wrap gap-2" id="company-filters">
+                        <span data-filter="company" data-value="google"    class="filter-pill px-3 py-1.5 rounded-xl bg-red-50    text-red-700    text-sm font-semibold border-red-100"><i class="fab fa-google mr-1"></i>Google</span>
+                        <span data-filter="company" data-value="amazon"    class="filter-pill px-3 py-1.5 rounded-xl bg-orange-50 text-orange-700 text-sm font-semibold border-orange-100"><i class="fab fa-amazon mr-1"></i>Amazon</span>
+                        <span data-filter="company" data-value="microsoft" class="filter-pill px-3 py-1.5 rounded-xl bg-blue-50   text-blue-700   text-sm font-semibold border-blue-100"><i class="fab fa-microsoft mr-1"></i>Microsoft</span>
+                        <span data-filter="company" data-value="meta"      class="filter-pill px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-sm font-semibold border-indigo-100"><i class="fab fa-facebook mr-1"></i>Meta</span>
+                        <span data-filter="company" data-value="apple"     class="filter-pill px-3 py-1.5 rounded-xl bg-gray-50   text-gray-700   text-sm font-semibold border-gray-200"><i class="fab fa-apple mr-1"></i>Apple</span>
+                        <span data-filter="company" data-value="adobe"     class="filter-pill px-3 py-1.5 rounded-xl bg-rose-50   text-rose-700   text-sm font-semibold border-rose-100">Adobe</span>
+                        <span data-filter="company" data-value="flipkart"  class="filter-pill px-3 py-1.5 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-semibold border-yellow-100">Flipkart</span>
+                        <span data-filter="company" data-value="infosys"   class="filter-pill px-3 py-1.5 rounded-xl bg-teal-50   text-teal-700   text-sm font-semibold border-teal-100">Infosys</span>
+                        <span data-filter="company" data-value="tcs"       class="filter-pill px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 text-sm font-semibold border-purple-100">TCS</span>
+                        <span data-filter="company" data-value="wipro"     class="filter-pill px-3 py-1.5 rounded-xl bg-violet-50 text-violet-700 text-sm font-semibold border-violet-100">Wipro</span>
+                    </div>
+                </div>
+
+                <!-- ── 4. DIFFICULTY ── -->
+                <div>
+                    <h3 class="section-heading text-sm font-bold text-gray-700 uppercase tracking-widest mb-4">
+                        <i class="fas fa-signal mr-2 text-red-400"></i>Difficulty
+                    </h3>
+                    <div class="flex gap-2" id="diff-filters">
+                        <span data-filter="diff" data-value="easy"   class="filter-pill flex-1 text-center px-3 py-2.5 rounded-xl bg-green-50 text-green-700 text-sm font-bold border-green-100"><i class="fas fa-circle mr-1"></i>Easy</span>
+                        <span data-filter="diff" data-value="medium" class="filter-pill flex-1 text-center px-3 py-2.5 rounded-xl bg-yellow-50 text-yellow-700 text-sm font-bold border-yellow-100"><i class="fas fa-circle mr-1"></i>Medium</span>
+                        <span data-filter="diff" data-value="hard"   class="filter-pill flex-1 text-center px-3 py-2.5 rounded-xl bg-red-50 text-red-600 text-sm font-bold border-red-100"><i class="fas fa-circle mr-1"></i>Hard</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── PROBLEMS LIST ── -->
+        <div class="flex-1">
+            <!-- Top bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">All Problems</h2>
+                    <p class="text-gray-500 mt-1">Showing <span id="result-count" class="font-bold text-green-600">20</span> problems</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label class="text-sm text-gray-600 font-medium">Sort:</label>
+                    <select id="sort-select" class="px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-green-400 focus:outline-none text-sm font-semibold bg-white shadow-sm cursor-pointer">
+                        <option value="default">Default</option>
+                        <option value="easy-first">Easy First</option>
+                        <option value="hard-first">Hard First</option>
+                        <option value="az">A → Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Problem Cards Grid -->
+            <div id="problems-grid" class="grid gap-5">
+                <!-- Cards injected by JS -->
+            </div>
+
+            <!-- No results -->
+            <div id="no-results" class="hidden text-center py-24">
+                <div class="text-6xl mb-4">🔍</div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-2">No problems found</h3>
+                <p class="text-gray-500">Try adjusting your filters or search term.</p>
+                <button id="reset-btn" class="mt-6 px-6 py-3 bg-green-600 text-white rounded-2xl font-semibold hover:bg-green-700 transition-colors">
+                    Reset Filters
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ PROGRESS SECTION ═══════════════════════ -->
+<section class="bg-white border-t border-gray-200 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Your Progress</h2>
+        <p class="text-gray-500 text-center mb-10">Keep going — every problem makes you stronger!</p>
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Easy -->
+            <div class="bg-green-50 rounded-2xl p-6 border border-green-100">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-green-700">Easy</span>
+                    <span class="text-sm text-gray-500">42 / 248</span>
+                </div>
+                <div class="bg-green-100 rounded-full h-3">
+                    <div class="progress-bar bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full" style="width:17%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">17% Completed</p>
+            </div>
+            <!-- Medium -->
+            <div class="bg-yellow-50 rounded-2xl p-6 border border-yellow-100">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-yellow-700">Medium</span>
+                    <span class="text-sm text-gray-500">18 / 185</span>
+                </div>
+                <div class="bg-yellow-100 rounded-full h-3">
+                    <div class="progress-bar bg-gradient-to-r from-yellow-400 to-orange-400 h-3 rounded-full" style="width:10%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">10% Completed</p>
+            </div>
+            <!-- Hard -->
+            <div class="bg-red-50 rounded-2xl p-6 border border-red-100">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-red-700">Hard</span>
+                    <span class="text-sm text-gray-500">5 / 92</span>
+                </div>
+                <div class="bg-red-100 rounded-full h-3">
+                    <div class="progress-bar bg-gradient-to-r from-red-400 to-rose-600 h-3 rounded-full" style="width:5%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">5% Completed</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="bg-gray-900 text-gray-400 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-gfg-green rounded-xl flex items-center justify-center"><i class="fas fa-code text-white text-xl"></i></div>
+                    <span class="text-2xl font-bold text-white">GFG RIT</span>
+                </div>
+                <p class="text-gray-400 leading-relaxed">GeeksforGeeks Campus Club at RIT — Empowering students through coding excellence and community collaboration.</p>
+            </div>
+            <!-- Quick Links -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Quick Links</h4>
+    <ul class="space-y-3">
+        <li>
+            <a href="HOME.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </li>
+        <li>
+            <a href="CHALLENGES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-trophy"></i> Challenges
+            </a>
+        </li>
+        <li>
+            <a href="RESOURCES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-book"></i> Resources
+            </a>
+        </li>
+        <li>
+            <a href="EVENTS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-calendar-alt"></i> Events
+            </a>
+        </li>
+        <li>
+            <a href="BLOGS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-blog"></i> Blogs
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Contact -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Contact Info</h4>
+    <div class="space-y-3">
+        <p class="flex items-center gap-2">
+            <i class="fas fa-envelope text-gfg-green"></i> gfg.rit.club@gmail.com
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-gfg-green"></i> RIT Campus, Tech City
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-phone text-gfg-green"></i> +91 98765 43210
+        </p>
+    </div>
+</div>
+
+<!-- Social -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Follow Us</h4>
+    <div class="flex flex-col space-y-3">
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-linkedin text-xl"></i> LinkedIn
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-instagram text-xl"></i> Instagram
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-github text-xl"></i> GitHub
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-discord text-xl"></i> Discord
+        </a>
+    </div>
+</div>
+</div>
+        <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2026 GFG Community. Built with ❤️ for student developers. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── PROBLEM DATA ──
+const problems = [
+    { id:1,  title:"Two Sum",                      dsa:"array",      diff:"easy",   lang:"python",   company:"google",    acceptance:"72%", solvedBy:4820 },
+    { id:2,  title:"Reverse a Linked List",         dsa:"linkedlist", diff:"easy",   lang:"cpp",      company:"amazon",    acceptance:"68%", solvedBy:3910 },
+    { id:3,  title:"Binary Search",                 dsa:"searching",  diff:"easy",   lang:"java",     company:"microsoft", acceptance:"75%", solvedBy:5200 },
+    { id:4,  title:"Merge Sort",                    dsa:"sorting",    diff:"medium", lang:"cpp",      company:"google",    acceptance:"60%", solvedBy:2890 },
+    { id:5,  title:"Longest Common Subsequence",    dsa:"dp",         diff:"medium", lang:"python",   company:"amazon",    acceptance:"55%", solvedBy:2100 },
+    { id:6,  title:"Detect Cycle in Graph",         dsa:"graph",      diff:"medium", lang:"java",     company:"meta",      acceptance:"52%", solvedBy:1870 },
+    { id:7,  title:"N-Queens Problem",              dsa:"recursion",  diff:"hard",   lang:"cpp",      company:"google",    acceptance:"38%", solvedBy: 780 },
+    { id:8,  title:"Dijkstra's Shortest Path",      dsa:"graph",      diff:"hard",   lang:"python",   company:"microsoft", acceptance:"42%", solvedBy: 960 },
+    { id:9,  title:"Valid Parentheses",             dsa:"stack",      diff:"easy",   lang:"js",       company:"microsoft", acceptance:"70%", solvedBy:4500 },
+    { id:10, title:"Maximum Subarray (Kadane's)",   dsa:"array",      diff:"medium", lang:"python",   company:"amazon",    acceptance:"58%", solvedBy:3200 },
+    { id:11, title:"Inorder Tree Traversal",        dsa:"tree",       diff:"easy",   lang:"java",     company:"flipkart",  acceptance:"80%", solvedBy:6100 },
+    { id:12, title:"Anagram Check",                 dsa:"hashing",    diff:"easy",   lang:"python",   company:"google",    acceptance:"73%", solvedBy:4300 },
+    { id:13, title:"Word Break Problem",            dsa:"dp",         diff:"hard",   lang:"cpp",      company:"amazon",    acceptance:"40%", solvedBy: 890 },
+    { id:14, title:"Kth Largest Element",           dsa:"sorting",    diff:"medium", lang:"java",     company:"apple",     acceptance:"56%", solvedBy:2400 },
+    { id:15, title:"Fibonacci (Memoization)",        dsa:"dp",         diff:"easy",   lang:"js",       company:"tcs",       acceptance:"82%", solvedBy:7000 },
+    { id:16, title:"Longest Palindromic Substring", dsa:"string",     diff:"medium", lang:"cpp",      company:"adobe",     acceptance:"50%", solvedBy:1950 },
+    { id:17, title:"Find the Missing Number",       dsa:"array",      diff:"easy",   lang:"c",        company:"infosys",   acceptance:"78%", solvedBy:5800 },
+    { id:18, title:"Topological Sort",              dsa:"graph",      diff:"hard",   lang:"java",     company:"google",    acceptance:"44%", solvedBy:1020 },
+    { id:19, title:"Count Inversions in Array",     dsa:"sorting",    diff:"medium", lang:"python",   company:"wipro",     acceptance:"49%", solvedBy:1600 },
+    { id:20, title:"Minimum Spanning Tree (Prim)",  dsa:"graph",      diff:"hard",   lang:"cpp",      company:"microsoft", acceptance:"41%", solvedBy: 850 },
+];
+
+// ── STATE ──
+let activeFilters = { lang:null, dsa:null, company:null, diff:null };
+let searchTerm = '';
+let sortMode = 'default';
+
+// ── RENDER CARDS ──
+function diffBadge(d) {
+    if(d==='easy')   return `<span class="badge-easy   px-3 py-1 rounded-lg text-xs font-bold"><i class="fas fa-circle text-xs mr-1"></i>Easy</span>`;
+    if(d==='medium') return `<span class="badge-medium px-3 py-1 rounded-lg text-xs font-bold"><i class="fas fa-circle text-xs mr-1"></i>Medium</span>`;
+                     return `<span class="badge-hard   px-3 py-1 rounded-lg text-xs font-bold"><i class="fas fa-fire  text-xs mr-1"></i>Hard</span>`;
+}
+
+function dsaIcon(dsa) {
+    const icons = { array:'th', linkedlist:'link', tree:'sitemap', graph:'project-diagram', dp:'brain', sorting:'sort-amount-down', searching:'search', stack:'layer-group', hashing:'hashtag', recursion:'redo', greedy:'bolt', string:'font' };
+    return icons[dsa] || 'code';
+}
+
+function companyIcon(c) {
+    const icons = { google:'google', amazon:'amazon', microsoft:'microsoft', meta:'facebook', apple:'apple' };
+    return icons[c] ? `<i class="fab fa-${icons[c]} mr-1"></i>` : '';
+}
+
+function renderCard(p) {
+    return `
+    <div class="problem-card bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 p-6 flex flex-col sm:flex-row sm:items-center gap-4 fade-up"
+         data-id="${p.id}" data-lang="${p.lang}" data-dsa="${p.dsa}" data-company="${p.company}" data-diff="${p.diff}">
+        <!-- Icon -->
+        <div class="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center ${p.diff==='easy'?'bg-green-50 text-green-600':p.diff==='medium'?'bg-yellow-50 text-yellow-600':'bg-red-50 text-red-500'} text-2xl">
+            <i class="fas fa-${dsaIcon(p.dsa)}"></i>
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+                <h3 class="text-base font-bold text-gray-800 truncate">${p.title}</h3>
+                ${diffBadge(p.diff)}
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs text-gray-500 mt-1">
+                <span class="bg-gray-100 rounded-lg px-2 py-0.5 font-medium"><i class="fas fa-${dsaIcon(p.dsa)} mr-1"></i>${p.dsa.replace('linkedlist','Linked List').replace('dp','Dynamic Prog.')}</span>
+                <span class="bg-gray-100 rounded-lg px-2 py-0.5 font-medium">${companyIcon(p.company)}${p.company.charAt(0).toUpperCase()+p.company.slice(1)}</span>
+                <span class="bg-gray-100 rounded-lg px-2 py-0.5 font-medium"><i class="fas fa-check-circle mr-1 text-green-400"></i>${p.acceptance} acceptance</span>
+                <span class="bg-gray-100 rounded-lg px-2 py-0.5 font-medium"><i class="fas fa-users mr-1 text-blue-400"></i>${p.solvedBy.toLocaleString()} solved</span>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="flex-shrink-0">
+            <button class="group px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-sm hover:from-green-600 hover:to-emerald-700 transition-all shadow-md hover:shadow-green-300/40 flex items-center gap-2">
+                Solve <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </div>`;
+}
+
+function applyFilters() {
+    let list = [...problems];
+
+    // Search
+    if(searchTerm) {
+        list = list.filter(p => p.title.toLowerCase().includes(searchTerm) || p.dsa.includes(searchTerm) || p.company.includes(searchTerm));
+    }
+
+    // Filters
+    if(activeFilters.lang)    list = list.filter(p => p.lang    === activeFilters.lang);
+    if(activeFilters.dsa)     list = list.filter(p => p.dsa     === activeFilters.dsa);
+    if(activeFilters.company) list = list.filter(p => p.company === activeFilters.company);
+    if(activeFilters.diff)    list = list.filter(p => p.diff    === activeFilters.diff);
+
+    // Sort
+    const order = { easy:0, medium:1, hard:2 };
+    if(sortMode === 'easy-first') list.sort((a,b) => order[a.diff] - order[b.diff]);
+    if(sortMode === 'hard-first') list.sort((a,b) => order[b.diff] - order[a.diff]);
+    if(sortMode === 'az')         list.sort((a,b) => a.title.localeCompare(b.title));
+
+    // Render
+    const grid = document.getElementById('problems-grid');
+    const noRes = document.getElementById('no-results');
+    document.getElementById('result-count').textContent = list.length;
+
+    if(list.length === 0) {
+        grid.innerHTML = '';
+        noRes.classList.remove('hidden');
+    } else {
+        noRes.classList.add('hidden');
+        grid.innerHTML = list.map(renderCard).join('');
+    }
+
+    // Active filter count
+    const count = Object.values(activeFilters).filter(Boolean).length;
+    const banner = document.getElementById('active-filter-banner');
+    document.getElementById('active-count').textContent = count;
+    count > 0 ? banner.classList.remove('hidden') : banner.classList.add('hidden');
+}
+
+// ── FILTER PILLS CLICK ──
+document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+        const type = pill.dataset.filter;
+        const val  = pill.dataset.value;
+
+        if(activeFilters[type] === val) {
+            // Toggle off
+            activeFilters[type] = null;
+            pill.classList.remove('active');
+        } else {
+            // Deactivate previous in same group
+            document.querySelectorAll(`.filter-pill[data-filter="${type}"]`).forEach(p => p.classList.remove('active'));
+            activeFilters[type] = val;
+            pill.classList.add('active');
+        }
+        applyFilters();
+    });
+});
+
+// ── SEARCH ──
+document.getElementById('search-input').addEventListener('input', e => {
+    searchTerm = e.target.value.toLowerCase().trim();
+    applyFilters();
+});
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && searchTerm.length > 0) {
+        document.getElementById('problems-grid').firstElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+// ── SORT ──
+document.getElementById('sort-select').addEventListener('change', e => {
+    sortMode = e.target.value;
+    applyFilters();
+});
+
+// ── CLEAR ALL ──
+function clearAll() {
+    activeFilters = { lang:null, dsa:null, company:null, diff:null };
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    searchTerm = '';
+    document.getElementById('search-input').value = '';
+    sortMode = 'default';
+    document.getElementById('sort-select').value = 'default';
+    applyFilters();
+}
+document.getElementById('clear-filters').addEventListener('click', clearAll);
+document.getElementById('reset-btn').addEventListener('click', clearAll);
+
+// ── CHALLENGE OF THE DAY DATE ──
+const cotdEl = document.getElementById('cotd-date');
+if(cotdEl) {
+    cotdEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+}
+
+// ── MOBILE MENU ──
+const mobileBtn  = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+// ── INITIAL RENDER ──
+applyFilters();
+</script>
+</body>
+</html>

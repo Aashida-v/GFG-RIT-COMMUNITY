@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Resources - GFG RIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gfg-green': '#00C851',
+                        'gfg-green-dark': '#00A741',
+                        'gfg-green-light': '#E8F5E8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,200,81,0.15); }
+        .navbar-link { transition: all 0.3s ease; }
+        .navbar-link:hover { color: #16a34a !important; transform: translateY(-2px); }
+
+        .nav-active {
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 2px;
+        }
+        html { scroll-behavior: smooth; }
+        .section-title { position: relative; display: inline-block; }
+        .section-title::after { content:''; display:block; width:60px; height:4px; background:linear-gradient(90deg,#10b981,#059669); border-radius:4px; margin:10px auto 0; }
+        .tag { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+        @keyframes blob { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%;}50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%;} }
+        .blob { animation: blob 8s ease-in-out infinite; }
+        .tab-btn.active { background:linear-gradient(135deg,#10b981,#059669); color:white; box-shadow:0 4px 14px rgba(16,185,129,0.35); }
+        .tab-btn { transition: all 0.25s ease; }
+        .resource-link { transition: all 0.2s ease; }
+        .resource-link:hover { transform: translateX(4px); }
+        .tab-bar { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+        @keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);} }
+        .float { animation: float 4s ease-in-out infinite; }
+        .float-delay { animation: float 4s ease-in-out infinite 1.5s; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- ══════════════════ NAVBAR ══════════════════ -->
+<!--<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gradient-to-r from-gfg-green to-gfg-green-dark rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-code text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-bold bg-gradient-to-r from-gfg-green to-gfg-green-dark bg-clip-text text-transparent">GFG RIT</span>
+            </div>-->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-code text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">GFG RIT</h1>
+                </div>
+            </div>
+        <div class="hidden md:flex items-center space-x-1">
+                <a href="HOME.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Home</a>
+                <a href="CHALLENGES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Challenges</a>
+                <a href="RESOURCES.HTML" class="px-4 py-3 text-green-600 font-semibold transition-all duration-300 rounded-xl bg-green-50 shadow-sm border border-green-200 nav-active">Resources</a>
+                <a href="EVENTS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Events</a>
+                <a href="BLOGS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Blogs</a>
+                <a href="PROFILE.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">My Profile</a>
+                <a href="LOGIN.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Logout</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars text-xl text-gray-700"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden pb-6 space-y-2 border-t border-gray-200 pt-4">
+            <a href="HOME.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Home</a>
+            <a href="CHALLENGES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Challenges</a>
+            <a href="RESOURCES.HTML" class="block px-4 py-3 bg-green-50 text-green-600 font-semibold rounded-xl border border-green-200 shadow-sm">Resources</a>
+            <a href="EVENTS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Events</a>
+            <a href="BLOGS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Blogs</a>
+            <a href="PROFILE.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">My Profile</a>
+            <a href="LOGIN.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Logout</a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero-bg relative overflow-hidden py-28">
+    <div class="absolute top-10 left-10 w-64 h-64 bg-white/10 blob rounded-full blur-2xl pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-white/5 blob rounded-full blur-3xl pointer-events-none" style="animation-delay:3s"></div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-semibold mb-6 border border-white/25">
+            <i class="fas fa-book-open text-green-200"></i> GeeksforGeeks Learning Hub
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            Learning <span class="bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent">Resources</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-green-100/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+            All resources are sourced directly from <strong>GeeksforGeeks</strong> — the most trusted platform for CS students and coding interview preparation.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <div class="float bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold">
+                <i class="fas fa-layer-group mr-2 text-green-200"></i>6 Resource Categories
+            </div>
+            <div class="float-delay bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold">
+                <i class="fas fa-link mr-2 text-green-200"></i>GFG Links Only
+            </div>
+            <div class="float bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold" style="animation-delay:0.8s">
+                <i class="fas fa-star mr-2 text-yellow-300"></i>Curated for RIT Students
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ STICKY TAB BAR ══════════════════ -->
+<div class="sticky top-[72px] z-40 bg-white tab-bar border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex overflow-x-auto gap-2 py-3">
+            <button onclick="scrollToSection('tutorials')" class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green active" data-tab="tutorials"><i class="fas fa-laptop-code mr-2"></i>Tutorials</button>
+            <button onclick="scrollToSection('dsa')"       class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green" data-tab="dsa"><i class="fas fa-sitemap mr-2"></i>DSA Materials</button>
+            <button onclick="scrollToSection('paths')"     class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green" data-tab="paths"><i class="fas fa-road mr-2"></i>Learning Paths</button>
+            <button onclick="scrollToSection('platforms')" class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green" data-tab="platforms"><i class="fas fa-globe mr-2"></i>GFG Practice</button>
+            <button onclick="scrollToSection('videos')"    class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green" data-tab="videos"><i class="fas fa-play-circle mr-2"></i>Video Tutorials</button>
+            <button onclick="scrollToSection('placement')" class="tab-btn whitespace-nowrap px-5 py-2 rounded-xl font-semibold text-sm text-gray-600 hover:bg-green-50 hover:text-gfg-green" data-tab="placement"><i class="fas fa-briefcase mr-2"></i>Placement Prep</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ 1. PROGRAMMING TUTORIALS ══════════════════ -->
+<section id="tutorials" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4">Programming Tutorials</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">Learn any programming language directly from GeeksforGeeks — structured, beginner-friendly, and interview-focused.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-blue-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fab fa-python text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">Python</h3><span class="tag bg-blue-100 text-blue-700">Beginner Friendly</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Learn Python from basics to advanced — functions, OOP, file handling, and more on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/python-programming-language/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Python Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/python-exercises-practice-questions-and-solutions/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Python Practice Exercises – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/python-oops-concepts/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Python OOP Concepts – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-orange-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fas fa-coffee text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">Java</h3><span class="tag bg-orange-100 text-orange-700">OOP & Interviews</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Master Java — the go-to language for placements and backend development on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/java/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-orange-50 text-sm font-medium text-gray-700 hover:text-orange-600"><i class="fas fa-external-link-alt text-orange-400"></i> Java Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/java-programming-examples/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-orange-50 text-sm font-medium text-gray-700 hover:text-orange-600"><i class="fas fa-external-link-alt text-orange-400"></i> Java Practice Exercises – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-orange-50 text-sm font-medium text-gray-700 hover:text-orange-600"><i class="fas fa-external-link-alt text-orange-400"></i> Java OOPs Concepts – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-purple-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-violet-700 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fas fa-code text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">C++</h3><span class="tag bg-purple-100 text-purple-700">Competitive Prog.</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">The language of competitive programming — fast, powerful, with full STL coverage on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/c-plus-plus/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 text-sm font-medium text-gray-700 hover:text-purple-600"><i class="fas fa-external-link-alt text-purple-400"></i> C++ Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/the-c-standard-template-library-stl/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 text-sm font-medium text-gray-700 hover:text-purple-600"><i class="fas fa-external-link-alt text-purple-400"></i> C++ STL Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/cpp-programming-examples/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 text-sm font-medium text-gray-700 hover:text-purple-600"><i class="fas fa-external-link-alt text-purple-400"></i> C++ Exercises – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-yellow-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fab fa-js text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">JavaScript</h3><span class="tag bg-yellow-100 text-yellow-700">Web Dev</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Build interactive web apps — from DOM manipulation to modern ES6+ features on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/javascript/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-yellow-50 text-sm font-medium text-gray-700 hover:text-yellow-600"><i class="fas fa-external-link-alt text-yellow-500"></i> JavaScript Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/javascript-programming-examples/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-yellow-50 text-sm font-medium text-gray-700 hover:text-yellow-600"><i class="fas fa-external-link-alt text-yellow-500"></i> JS Practice Exercises – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/es6/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-yellow-50 text-sm font-medium text-gray-700 hover:text-yellow-600"><i class="fas fa-external-link-alt text-yellow-500"></i> ES6 Features – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-indigo-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fas fa-terminal text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">C Language</h3><span class="tag bg-indigo-100 text-indigo-700">Foundation</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">The foundation of all programming — learn pointers, memory management and more on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/c-programming-language/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-indigo-50 text-sm font-medium text-gray-700 hover:text-indigo-600"><i class="fas fa-external-link-alt text-indigo-400"></i> C Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/c-programming-examples/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-indigo-50 text-sm font-medium text-gray-700 hover:text-indigo-600"><i class="fas fa-external-link-alt text-indigo-400"></i> C Practice Exercises – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/dynamic-memory-allocation-in-c-using-malloc-calloc-free-and-realloc/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-indigo-50 text-sm font-medium text-gray-700 hover:text-indigo-600"><i class="fas fa-external-link-alt text-indigo-400"></i> C Memory Management – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-teal-200">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <i class="fas fa-database text-2xl text-white"></i>
+                    </div>
+                    <div><h3 class="text-xl font-bold text-gray-800">SQL</h3><span class="tag bg-teal-100 text-teal-700">Database</span></div>
+                </div>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Query databases confidently — SQL is asked in almost every tech interview. Learn it on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/sql-tutorial/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-teal-50 text-sm font-medium text-gray-700 hover:text-teal-600"><i class="fas fa-external-link-alt text-teal-400"></i> SQL Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/sql-programming-examples/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-teal-50 text-sm font-medium text-gray-700 hover:text-teal-600"><i class="fas fa-external-link-alt text-teal-400"></i> SQL Practice Exercises – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/sql-query-interview-questions/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-teal-50 text-sm font-medium text-gray-700 hover:text-teal-600"><i class="fas fa-external-link-alt text-teal-400"></i> SQL Interview Queries – GFG</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ 2. DSA LEARNING MATERIALS ══════════════════ -->
+<section id="dsa" class="py-20 bg-gradient-to-br from-gfg-green-light to-green-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4">DSA Learning Materials</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">Crack coding interviews with these must-have Data Structures & Algorithms resources — all on GFG.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-green-300">
+                <div class="w-14 h-14 bg-gradient-to-br from-gfg-green to-gfg-green-dark rounded-2xl flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-list-ol text-2xl text-white"></i>
+                </div>
+                <span class="tag bg-green-100 text-green-700 mb-3">Must Do</span>
+                <h3 class="text-xl font-bold text-gray-800 mb-2 mt-2">DSA Problem Sheets</h3>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Structured GFG problem sets to build strong DSA foundations topic by topic.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/dsa-tutorial-learn-data-structures-and-algorithms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-green-50 text-sm font-medium text-gray-700 hover:text-gfg-green"><i class="fas fa-external-link-alt text-gfg-green"></i> Top 100 DSA Questions – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/dsa-sheet-by-love-babbar/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-green-50 text-sm font-medium text-gray-700 hover:text-gfg-green"><i class="fas fa-external-link-alt text-gfg-green"></i> DSA Sheet by Love Babbar – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/must-do-coding-questions-for-companies-like-amazon-microsoft-adobe/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-green-50 text-sm font-medium text-gray-700 hover:text-gfg-green"><i class="fas fa-external-link-alt text-gfg-green"></i> Must-Do Coding Questions – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-blue-200">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-sitemap text-2xl text-white"></i>
+                </div>
+                <span class="tag bg-blue-100 text-blue-700 mb-3">Topic Wise</span>
+                <h3 class="text-xl font-bold text-gray-800 mb-2 mt-2">Core DSA Topics</h3>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Deep dive into each DSA topic with GFG's comprehensive articles and practice problems.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/array-data-structure/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Arrays – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Graphs – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/dynamic-programming/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Dynamic Programming – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/tree-data-structure/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-600"><i class="fas fa-external-link-alt text-blue-400"></i> Trees – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 p-7 group hover:border-pink-200">
+                <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-cogs text-2xl text-white"></i>
+                </div>
+                <span class="tag bg-pink-100 text-pink-700 mb-3">Algorithms</span>
+                <h3 class="text-xl font-bold text-gray-800 mb-2 mt-2">Sorting & Searching</h3>
+                <p class="text-gray-500 text-sm mb-5 leading-relaxed">Master all major sorting and searching algorithms with GFG's explanations and code.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/sorting-algorithms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-pink-50 text-sm font-medium text-gray-700 hover:text-pink-600"><i class="fas fa-external-link-alt text-pink-400"></i> Sorting Algorithms – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/searching-algorithms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-pink-50 text-sm font-medium text-gray-700 hover:text-pink-600"><i class="fas fa-external-link-alt text-pink-400"></i> Searching Algorithms – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/greedy-algorithms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-pink-50 text-sm font-medium text-gray-700 hover:text-pink-600"><i class="fas fa-external-link-alt text-pink-400"></i> Greedy Algorithms – GFG</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ 3. LEARNING PATHS ══════════════════ -->
+<section id="paths" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4">Learning Paths</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">Structured GFG roadmaps to take you from zero to placement-ready.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group hover:border-green-300">
+                <div class="h-2 bg-gradient-to-r from-gfg-green to-emerald-400"></div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><i class="fas fa-route text-gfg-green text-xl"></i></div>
+                        <span class="tag bg-green-100 text-green-700">Self Paced</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">DSA Self-Paced Course</h3>
+                    <p class="text-gray-500 text-sm mb-5">Complete DSA journey on GFG — Arrays, LinkedList, Trees, Graphs, DP and more.</p>
+                    <div class="space-y-2 text-sm mb-6">
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Arrays & Strings</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Linked Lists & Stacks</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Trees & Graphs</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Dynamic Programming</div>
+                    </div>
+                    <a href="https://www.geeksforgeeks.org/complete-roadmap-to-learn-dsa-from-scratch/" target="_blank" class="block w-full text-center py-3 bg-gradient-to-r from-gfg-green to-gfg-green-dark text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-md">View DSA Roadmap on GFG <i class="fas fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group hover:border-blue-200">
+                <div class="h-2 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-laptop-code text-blue-600 text-xl"></i></div>
+                        <span class="tag bg-blue-100 text-blue-700">Web Dev</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Full Stack Development</h3>
+                    <p class="text-gray-500 text-sm mb-5">HTML → CSS → JS → React → Node.js — complete web dev track on GFG.</p>
+                    <div class="space-y-2 text-sm mb-6">
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> HTML & CSS Basics</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> JavaScript & DOM</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> React.js Fundamentals</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Node.js & Express</div>
+                    </div>
+                    <a href="https://www.geeksforgeeks.org/web-development/" target="_blank" class="block w-full text-center py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-md">View Web Dev Path on GFG <i class="fas fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group hover:border-purple-200">
+                <div class="h-2 bg-gradient-to-r from-purple-500 to-violet-500"></div>
+                <div class="p-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center"><i class="fas fa-trophy text-purple-600 text-xl"></i></div>
+                        <span class="tag bg-purple-100 text-purple-700">Competitive</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Competitive Programming</h3>
+                    <p class="text-gray-500 text-sm mb-5">Master CP techniques on GFG — from basic maths to advanced graph algorithms.</p>
+                    <div class="space-y-2 text-sm mb-6">
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Number Theory & Math</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Greedy & Divide and Conquer</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Graph Algorithms</div>
+                        <div class="flex items-center gap-2 text-gray-600"><i class="fas fa-check-circle text-gfg-green"></i> Advanced DP</div>
+                    </div>
+                    <a href="https://www.geeksforgeeks.org/competitive-programming-a-complete-guide/" target="_blank" class="block w-full text-center py-3 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shadow-md">View CP Guide on GFG <i class="fas fa-arrow-right ml-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ 4. GFG PRACTICE ══════════════════ -->
+<section id="platforms" class="py-20 bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Practice on <span class="bg-gradient-to-r from-gfg-green to-emerald-400 bg-clip-text text-transparent">GeeksforGeeks</span></h2>
+            <div class="w-14 h-1 bg-gradient-to-r from-gfg-green to-emerald-400 rounded-full mx-auto mb-4"></div>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">Everything you need to practice is right on GFG — problems, contests, quizzes and more.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <a href="https://www.geeksforgeeks.org/explore" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-gfg-green flex items-center gap-5">
+                <div class="w-16 h-16 bg-gfg-green/20 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-code text-3xl text-gfg-green"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG Practice Problems</h3><p class="text-gray-400 text-sm">Topic-wise problems from Easy to Hard. Practice at your own pace.</p><span class="tag bg-gfg-green/20 text-green-300 mt-2">Most Recommended</span></div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/events/" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-yellow-400 flex items-center gap-5">
+                <div class="w-16 h-16 bg-yellow-400/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-trophy text-3xl text-yellow-400"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG Contests</h3><p class="text-gray-400 text-sm">Weekly coding contests on GFG — compete and get ranked nationally.</p><span class="tag bg-yellow-400/20 text-yellow-300 mt-2">Weekly Contests</span></div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/quiz-corner-gq/" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-blue-400 flex items-center gap-5">
+                <div class="w-16 h-16 bg-blue-400/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-question-circle text-3xl text-blue-400"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG Quiz Corner</h3><p class="text-gray-400 text-sm">MCQ quizzes on OS, DBMS, CN, DSA — great for GATE and placements.</p><span class="tag bg-blue-400/20 text-blue-300 mt-2">MCQ Practice</span></div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/articles-on-data-structures-and-algorithms-dsa/" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-purple-400 flex items-center gap-5">
+                <div class="w-16 h-16 bg-purple-400/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-book text-3xl text-purple-400"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG DSA Articles</h3><p class="text-gray-400 text-sm">Thousands of in-depth articles on every DSA topic with code in multiple languages.</p><span class="tag bg-purple-400/20 text-purple-300 mt-2">In-Depth Reading</span></div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/courses/" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-orange-400 flex items-center gap-5">
+                <div class="w-16 h-16 bg-orange-400/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-road text-3xl text-orange-400"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG Courses</h3><p class="text-gray-400 text-sm">Structured online courses — DSA, Web Dev, ML and more with certificates.</p><span class="tag bg-orange-400/20 text-orange-300 mt-2">Certified Courses</span></div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/gate-cs-notes-gq/" target="_blank" class="card-hover group bg-gray-800 rounded-3xl p-7 border border-gray-700 hover:border-teal-400 flex items-center gap-5">
+                <div class="w-16 h-16 bg-teal-400/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><i class="fas fa-graduation-cap text-3xl text-teal-400"></i></div>
+                <div><h3 class="text-xl font-bold mb-1">GFG GATE Notes</h3><p class="text-gray-400 text-sm">Complete CS theory notes for GATE — OS, DBMS, Networks, TOC, Compilers.</p><span class="tag bg-teal-400/20 text-teal-300 mt-2">GATE Prep</span></div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ 5. VIDEO TUTORIALS ══════════════════ -->
+<section id="videos" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4">Video Tutorials</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">Watch and learn directly from the official GeeksforGeeks YouTube channel — free for everyone.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <a href="https://www.youtube.com/@GeeksforGeeksVideos" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-red-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fab fa-youtube text-2xl text-red-600"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">GFG Official Channel</h3><p class="text-xs text-gray-400">GeeksforGeeks YouTube</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">The official GFG YouTube channel — DSA lectures, interview tips, coding tutorials and more.</p>
+                <div class="mt-4 flex items-center gap-2 text-red-500 font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on YouTube</div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/dsa-tutorial-learn-data-structures-and-algorithms/" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-green-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-video text-2xl text-gfg-green"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">DSA Video Lectures</h3><p class="text-xs text-gray-400">GeeksforGeeks</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">Free DSA video lectures on GFG — covering all major topics from scratch to advanced.</p>
+                <div class="mt-4 flex items-center gap-2 text-gfg-green font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on GFG</div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/fundamentals-of-algorithms/" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-purple-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-film text-2xl text-purple-600"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">Algorithm Video Series</h3><p class="text-xs text-gray-400">GeeksforGeeks</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">Step-by-step algorithm video explanations with animations directly on GFG.</p>
+                <div class="mt-4 flex items-center gap-2 text-purple-500 font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on GFG</div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/python-programming-language/" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-blue-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fab fa-python text-2xl text-blue-600"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">Python Video Tutorials</h3><p class="text-xs text-gray-400">GeeksforGeeks</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">Learn Python through GFG's video series — from syntax basics to advanced concepts.</p>
+                <div class="mt-4 flex items-center gap-2 text-blue-500 font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on GFG</div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/java/" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-orange-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-coffee text-2xl text-orange-500"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">Java Video Tutorials</h3><p class="text-xs text-gray-400">GeeksforGeeks</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">Java fundamentals to OOP — video tutorials on GFG designed for placement preparation.</p>
+                <div class="mt-4 flex items-center gap-2 text-orange-500 font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on GFG</div>
+            </a>
+
+            <a href="https://www.geeksforgeeks.org/web-development/" target="_blank" class="card-hover group bg-white rounded-3xl shadow-lg border border-gray-100 p-7 hover:border-teal-200 block">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-globe text-2xl text-teal-600"></i></div>
+                    <div><h3 class="text-lg font-bold text-gray-800">Web Dev Video Series</h3><p class="text-xs text-gray-400">GeeksforGeeks</p></div>
+                </div>
+                <p class="text-gray-500 text-sm">HTML, CSS, JavaScript, React video tutorials — all in one place on GFG.</p>
+                <div class="mt-4 flex items-center gap-2 text-teal-500 font-semibold text-sm"><i class="fas fa-play-circle"></i> Watch on GFG</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ 6. PLACEMENT PREPARATION ══════════════════ -->
+<section id="placement" class="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Placement <span class="bg-gradient-to-r from-gfg-green to-emerald-400 bg-clip-text text-transparent">Preparation</span></h2>
+            <div class="w-14 h-1 bg-gradient-to-r from-gfg-green to-emerald-400 rounded-full mx-auto mb-4"></div>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">Crack on-campus and off-campus placements — everything sourced directly from GFG.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-gfg-green group">
+                <div class="w-14 h-14 bg-gfg-green/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-file-alt text-2xl text-gfg-green"></i></div>
+                <h3 class="text-xl font-bold mb-3">Resume Building</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">Craft an ATS-friendly resume using GFG's dedicated guide for CS freshers.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/how-to-write-a-resume-for-freshers/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-gfg-green/10 text-sm font-medium text-gray-300 hover:text-gfg-green"><i class="fas fa-external-link-alt text-gfg-green"></i> Resume Writing Guide – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/how-to-write-a-resume/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-gfg-green/10 text-sm font-medium text-gray-300 hover:text-gfg-green"><i class="fas fa-external-link-alt text-gfg-green"></i> Resume Tips for SWE – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-blue-400 group">
+                <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-comments text-2xl text-blue-400"></i></div>
+                <h3 class="text-xl font-bold mb-3">Interview Q&A</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">Top interview questions on OS, DBMS, Networks, OOP — all on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/commonly-asked-data-structure-interview-questions/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-blue-500/10 text-sm font-medium text-gray-300 hover:text-blue-400"><i class="fas fa-external-link-alt text-blue-400"></i> DSA Interview Questions – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/dbms-interview-questions/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-blue-500/10 text-sm font-medium text-gray-300 hover:text-blue-400"><i class="fas fa-external-link-alt text-blue-400"></i> DBMS Interview Questions – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/operating-systems-interview-questions/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-blue-500/10 text-sm font-medium text-gray-300 hover:text-blue-400"><i class="fas fa-external-link-alt text-blue-400"></i> OS Interview Questions – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-orange-400 group">
+                <div class="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-brain text-2xl text-orange-400"></i></div>
+                <h3 class="text-xl font-bold mb-3">Aptitude & Reasoning</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">Crack the aptitude round with GFG's quantitative and logical reasoning practice sets.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/aptitude-gq/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-orange-500/10 text-sm font-medium text-gray-300 hover:text-orange-400"><i class="fas fa-external-link-alt text-orange-400"></i> Aptitude Questions – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/reasoning/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-orange-500/10 text-sm font-medium text-gray-300 hover:text-orange-400"><i class="fas fa-external-link-alt text-orange-400"></i> Logical Reasoning – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-yellow-400 group">
+                <div class="w-14 h-14 bg-yellow-500/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-building text-2xl text-yellow-400"></i></div>
+                <h3 class="text-xl font-bold mb-3">Company Experiences</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">Read real interview experiences from students placed at top companies — shared on GFG.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/company-interview-corner/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-yellow-500/10 text-sm font-medium text-gray-300 hover:text-yellow-400"><i class="fas fa-external-link-alt text-yellow-400"></i> GFG Interview Corner</a>
+                    <a href="https://www.geeksforgeeks.org/must-do-coding-questions-company-wise/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-yellow-500/10 text-sm font-medium text-gray-300 hover:text-yellow-400"><i class="fas fa-external-link-alt text-yellow-400"></i> Company-wise Questions – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-teal-400 group">
+                <div class="w-14 h-14 bg-teal-500/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-project-diagram text-2xl text-teal-400"></i></div>
+                <h3 class="text-xl font-bold mb-3">System Design</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">Learn how to design scalable systems — from GFG's dedicated system design series.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/system-design-tutorial/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-teal-500/10 text-sm font-medium text-gray-300 hover:text-teal-400"><i class="fas fa-external-link-alt text-teal-400"></i> System Design Tutorial – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/top-10-system-design-interview-questions-and-answers/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-teal-500/10 text-sm font-medium text-gray-300 hover:text-teal-400"><i class="fas fa-external-link-alt text-teal-400"></i> System Design Interview Qs – GFG</a>
+                </div>
+            </div>
+
+            <div class="card-hover bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-pink-400 group">
+                <div class="w-14 h-14 bg-pink-500/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"><i class="fas fa-microchip text-2xl text-pink-400"></i></div>
+                <h3 class="text-xl font-bold mb-3">Core CS Subjects</h3>
+                <p class="text-gray-400 text-sm mb-5 leading-relaxed">OS, CN, DBMS — all core CS subjects thoroughly covered on GFG for placement exams.</p>
+                <div class="space-y-2">
+                    <a href="https://www.geeksforgeeks.org/operating-systems/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-pink-500/10 text-sm font-medium text-gray-300 hover:text-pink-400"><i class="fas fa-external-link-alt text-pink-400"></i> Operating Systems – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/computer-network-tutorials/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-pink-500/10 text-sm font-medium text-gray-300 hover:text-pink-400"><i class="fas fa-external-link-alt text-pink-400"></i> Computer Networks – GFG</a>
+                    <a href="https://www.geeksforgeeks.org/dbms/" target="_blank" class="resource-link flex items-center gap-3 p-3 rounded-xl bg-gray-700/50 hover:bg-pink-500/10 text-sm font-medium text-gray-300 hover:text-pink-400"><i class="fas fa-external-link-alt text-pink-400"></i> DBMS – GFG</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="bg-gray-900 text-gray-400 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-gfg-green rounded-xl flex items-center justify-center"><i class="fas fa-code text-white text-xl"></i></div>
+                    <span class="text-2xl font-bold text-white">GFG RIT</span>
+                </div>
+                <p class="text-gray-400 leading-relaxed">GeeksforGeeks Campus Club at RIT — Empowering students through coding excellence and community collaboration.</p>
+            </div>
+            <!-- Quick Links -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Quick Links</h4>
+    <ul class="space-y-3">
+        <li>
+            <a href="HOME.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </li>
+        <li>
+            <a href="CHALLENGES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-trophy"></i> Challenges
+            </a>
+        </li>
+        <li>
+            <a href="RESOURCES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-book"></i> Resources
+            </a>
+        </li>
+        <li>
+            <a href="EVENTS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-calendar-alt"></i> Events
+            </a>
+        </li>
+        <li>
+            <a href="BLOGS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-blog"></i> Blogs
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Contact -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Contact Info</h4>
+    <div class="space-y-3">
+        <p class="flex items-center gap-2">
+            <i class="fas fa-envelope text-gfg-green"></i> gfg.rit.club@gmail.com
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-gfg-green"></i> RIT Campus, Tech City
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-phone text-gfg-green"></i> +91 98765 43210
+        </p>
+    </div>
+</div>
+
+<!-- Social -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Follow Us</h4>
+    <div class="flex flex-col space-y-3">
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-linkedin text-xl"></i> LinkedIn
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-instagram text-xl"></i> Instagram
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-github text-xl"></i> GitHub
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-discord text-xl"></i> Discord
+        </a>
+    </div>
+</div>
+</div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+            <p>&copy; 2026 GFG RIT Community. Built with ❤️ for student developers. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+    document.getElementById('mobile-close-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+    });
+
+    function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            const top = el.getBoundingClientRect().top + window.scrollY - 140;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add('active');
+    }
+
+    const sections = ['tutorials','dsa','paths','platforms','videos','placement'];
+    window.addEventListener('scroll', () => {
+        let current = sections[0];
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && window.scrollY >= el.offsetTop - 160) current = id;
+        });
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const activeBtn = document.querySelector(`.tab-btn[data-tab="${current}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+    });
+</script>
+</body>
+</html>

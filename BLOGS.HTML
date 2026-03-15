@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles & Blogs - GFG RIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gfg-green': '#00C851',
+                        'gfg-green-dark': '#00A741',
+                        'gfg-green-light': '#E8F5E8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        .hero-bg { background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%); }
+
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,200,81,0.15); }
+
+        .navbar-link { transition: all 0.3s ease; }
+        .navbar-link:hover { color: #16a34a !important; transform: translateY(-2px); }
+
+        .nav-active {
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 2px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* Animated blobs */
+        @keyframes blob {
+            0%,100% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
+            50%      { border-radius: 30% 60% 70% 40%/50% 60% 30% 60%; }
+        }
+        .blob { animation: blob 8s ease-in-out infinite; }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+        .float       { animation: float 4s ease-in-out infinite; }
+        .float-delay { animation: float 4s ease-in-out infinite 1.5s; }
+
+        /* Search bar glow */
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 4px rgba(0,200,81,0.2);
+        }
+
+        /* Category pill */
+        .cat-pill {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .cat-pill:hover, .cat-pill.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+        }
+
+        /* Featured article gradient overlay */
+        .featured-overlay {
+            background: linear-gradient(to right, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.1));
+        }
+
+        /* Tag badge */
+        .tag { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+
+        /* Article card image placeholder */
+        .article-img {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: transform 0.4s ease;
+        }
+        .card-hover:hover .article-img { transform: scale(1.05); }
+
+        /* Section heading accent */
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px; height: 4px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 4px;
+            margin: 10px auto 0;
+        }
+
+        /* Search highlight */
+        .highlight { background: #fef9c3; border-radius: 3px; padding: 0 2px; }
+
+        /* Blog card read time bar */
+        .read-bar { height: 3px; border-radius: 99px; background: #e5e7eb; }
+        .read-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#10b981,#059669); }
+
+        /* Student card accent */
+        .student-card { border-left: 4px solid #00C851; }
+
+        /* Fade-up animation */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(24px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.5s ease forwards; }
+
+        /* Popular rank number */
+        .rank-num {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hide cards */
+        .article-card.hidden-card { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- ══════════════════ NAVBAR ══════════════════ -->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-code text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">GFG RIT</h1>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="HOME.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Home</a>
+                <a href="CHALLENGES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Challenges</a>
+                <a href="RESOURCES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Resources</a>
+                <a href="EVENTS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Events</a>
+                <a href="BLOGS.HTML" class="px-4 py-3 text-green-600 font-semibold transition-all duration-300 rounded-xl bg-green-50 shadow-sm border border-green-200 nav-active">Blogs</a>
+                <a href="PROFILE.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">My Profile</a>
+                <a href="LOGIN.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Logout</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars text-xl text-gray-700"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden pb-6 space-y-2 border-t border-gray-200 pt-4">
+            <a href="HOME.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Home</a>
+            <a href="CHALLENGES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Challenges</a>
+            <a href="RESOURCES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Resources</a>
+            <a href="EVENTS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Events</a>
+            <a href="BLOGS.HTML" class="block px-4 py-3 bg-green-50 text-green-600 font-semibold rounded-xl border border-green-200 shadow-sm">Blogs</a>
+            <a href="PROFILE.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">My Profile</a>
+            <a href="LOGIN.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero-bg relative overflow-hidden py-28">
+    <div class="absolute top-10 left-10 w-64 h-64 bg-white/10 blob rounded-full blur-2xl pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-white/5 blob rounded-full blur-3xl pointer-events-none" style="animation-delay:3s"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-300/10 blob rounded-full blur-3xl pointer-events-none" style="animation-delay:1.5s"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-2 rounded-full text-sm font-semibold mb-6 border border-white/25">
+            <i class="fas fa-pen-nib text-green-200"></i> Community Knowledge Hub
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            Articles &amp; <span class="bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent">Blogs</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-green-100/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Read articles written by our community — DSA tips, placement stories, coding tutorials, and everything in between.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto">
+            <div class="search-bar flex items-center bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-transparent transition-all">
+                <i class="fas fa-search text-gray-400 text-lg ml-5"></i>
+                <input id="search-input" type="text" placeholder="Search articles, topics, authors..."
+                    class="flex-1 px-4 py-5 text-gray-800 font-medium text-base bg-transparent focus:outline-none placeholder-gray-400">
+                <button id="search-btn" class="bg-gradient-to-r from-gfg-green to-gfg-green-dark text-white font-bold px-8 py-5 hover:opacity-90 transition-opacity">
+                    Search
+                </button>
+            </div>
+            <p class="text-green-100/70 text-sm mt-3">Popular: <span class="cursor-pointer hover:text-white transition-colors" onclick="setSearch('DSA')">DSA</span> · <span class="cursor-pointer hover:text-white transition-colors" onclick="setSearch('Placement')">Placement</span> · <span class="cursor-pointer hover:text-white transition-colors" onclick="setSearch('Python')">Python</span> · <span class="cursor-pointer hover:text-white transition-colors" onclick="setSearch('Interview')">Interview</span></p>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex flex-wrap justify-center gap-4 mt-10">
+            <div class="float      bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold"><i class="fas fa-newspaper mr-2 text-green-200"></i>30+ Articles</div>
+            <div class="float-delay bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold"><i class="fas fa-users mr-2 text-green-200"></i>Student Authors</div>
+            <div class="float bg-white/15 backdrop-blur-sm border border-white/25 rounded-2xl px-5 py-3 text-sm font-semibold" style="animation-delay:0.8s"><i class="fas fa-tags mr-2 text-yellow-300"></i>6 Categories</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ FEATURED ARTICLE ══════════════════ -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fas fa-star text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">Featured Article</h2>
+        </div>
+
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
+            <!-- Background -->
+            <div class="h-96 md:h-[480px] bg-gradient-to-br from-gray-900 via-green-900 to-emerald-800 relative">
+                <!-- Pattern overlay -->
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+                <!-- Code decoration -->
+                <div class="absolute right-8 top-8 hidden lg:block bg-black/40 backdrop-blur-sm rounded-2xl p-6 text-green-400 font-mono text-sm border border-green-500/20">
+                    <p class="text-gray-500 mb-1">// Crack any DSA interview</p>
+                    <p><span class="text-purple-400">function</span> <span class="text-yellow-300">solve</span>(problem) {</p>
+                    <p class="ml-4"><span class="text-blue-400">let</span> approach = <span class="text-green-300">analyze</span>(problem);</p>
+                    <p class="ml-4"><span class="text-blue-400">let</span> solution = <span class="text-green-300">code</span>(approach);</p>
+                    <p class="ml-4"><span class="text-blue-400">return</span> <span class="text-green-300">optimize</span>(solution);</p>
+                    <p>}</p>
+                </div>
+
+                <!-- Content overlay -->
+                <div class="featured-overlay absolute inset-0 flex items-end p-8 md:p-12">
+                    <div class="max-w-2xl">
+                        <div class="flex flex-wrap items-center gap-3 mb-4">
+                            <span class="tag bg-yellow-400 text-yellow-900">⭐ Featured</span>
+                            <span class="tag bg-green-500/30 text-green-200 border border-green-500/40">DSA</span>
+                            <span class="text-gray-300 text-sm"><i class="fas fa-clock mr-1"></i>8 min read</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-green-300 transition-colors">
+                            How to Crack Any DSA Interview: A Complete Roadmap for 2026
+                        </h3>
+                        <p class="text-gray-300 text-base mb-6 leading-relaxed max-w-xl">
+                            From arrays to dynamic programming — a step-by-step guide that helped 200+ RIT students crack top tech companies. Learn the exact approach, resources, and timeline.
+                        </p>
+                        <div class="flex flex-wrap items-center gap-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-gfg-green to-emerald-500 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-lg">AK</div>
+                                <div>
+                                    <p class="text-white font-semibold text-sm">Arjun Kumar</p>
+                                    <p class="text-gray-400 text-xs">GFG RIT Core Member · March 10, 2026</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-gray-400 text-sm">
+                                <span><i class="fas fa-eye mr-1 text-green-400"></i>4,280 views</span>
+                                <span><i class="fas fa-heart mr-1 text-red-400"></i>312 likes</span>
+                            </div>
+                            <a href="https://www.geeksforgeeks.org/complete-roadmap-to-learn-dsa-from-scratch/" target="_blank"
+                               class="ml-auto bg-gradient-to-r from-gfg-green to-gfg-green-dark text-white font-bold px-7 py-3 rounded-xl hover:opacity-90 transition-opacity shadow-lg flex items-center gap-2">
+                                Read Article <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ CATEGORIES ══════════════════ -->
+<section id="categories" class="py-10 bg-gray-50 border-y border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center gap-3">
+            <span class="text-sm font-bold text-gray-500 uppercase tracking-widest mr-2"><i class="fas fa-filter mr-2"></i>Filter:</span>
+            <button onclick="filterCategory('all')"       class="cat-pill active px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="all">All Articles</button>
+            <button onclick="filterCategory('dsa')"       class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="dsa"><i class="fas fa-sitemap mr-2 text-green-500"></i>DSA</button>
+            <button onclick="filterCategory('webdev')"    class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="webdev"><i class="fas fa-laptop-code mr-2 text-blue-500"></i>Web Dev</button>
+            <button onclick="filterCategory('placement')" class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="placement"><i class="fas fa-briefcase mr-2 text-purple-500"></i>Placement</button>
+            <button onclick="filterCategory('cp')"        class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="cp"><i class="fas fa-trophy mr-2 text-yellow-500"></i>Competitive Prog.</button>
+            <button onclick="filterCategory('tips')"      class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="tips"><i class="fas fa-lightbulb mr-2 text-orange-500"></i>Tips & Tricks</button>
+            <button onclick="filterCategory('ml')"        class="cat-pill px-5 py-2 rounded-xl bg-white shadow-sm border border-gray-200 text-sm font-semibold text-gray-700" data-cat="ml"><i class="fas fa-brain mr-2 text-pink-500"></i>ML / AI</button>
+            <span id="no-filter-results" class="hidden text-sm text-red-500 ml-4"><i class="fas fa-exclamation-circle mr-1"></i>No articles found</span>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ LATEST ARTICLES GRID ══════════════════ -->
+<section id="latest" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4 inline-block">Latest Articles</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">Fresh content from our community — updated every week.</p>
+        </div>
+
+        <div id="articles-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Card 1 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="dsa" data-title="Top 10 Array Problems Every Student Must Solve" data-author="Priya Sharma">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#10b981,#059669)">
+                    <i class="fas fa-th text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-layer-group text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Arrays</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-green-100 text-green-700">DSA</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>5 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Top 10 Array Problems Every Student Must Solve</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">Master these 10 classic array problems to build a rock-solid foundation for any coding interview.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:65%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">PS</div>
+                            <span class="text-sm text-gray-600 font-medium">Priya Sharma</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/array-data-structure/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="placement" data-title="My Amazon SDE Internship Journey from RIT" data-author="Rahul Verma">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+                    <i class="fab fa-amazon text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-building text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Amazon</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-orange-100 text-orange-700">Placement</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>7 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">My Amazon SDE Internship Journey from RIT</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">How I prepared for Amazon's OA and 3 interview rounds, and finally got the offer in my 3rd year.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:80%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-orange-400 to-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">RV</div>
+                            <span class="text-sm text-gray-600 font-medium">Rahul Verma</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/amazon-interview-experience/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="webdev" data-title="Build a Portfolio Website in 1 Hour with React" data-author="Sneha Patel">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">
+                    <i class="fab fa-react text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fab fa-react text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">React.js</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-blue-100 text-blue-700">Web Dev</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>6 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Build a Portfolio Website in 1 Hour with React</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">A hands-on tutorial to build a stunning portfolio from scratch using React.js and Tailwind CSS.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:50%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-bold">SP</div>
+                            <span class="text-sm text-gray-600 font-medium">Sneha Patel</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/reactjs/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="cp" data-title="Mastering Dynamic Programming: Patterns & Templates" data-author="Karan Mehta">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">
+                    <i class="fas fa-brain text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-brain text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Dynamic Programming</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-purple-100 text-purple-700">Competitive Prog.</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>10 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Mastering Dynamic Programming: Patterns & Templates</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">Break down every DP pattern — knapsack, LCS, matrix chain — with reusable templates you can apply instantly.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:90%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-violet-500 rounded-full flex items-center justify-center text-white text-xs font-bold">KM</div>
+                            <span class="text-sm text-gray-600 font-medium">Karan Mehta</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/dynamic-programming/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="tips" data-title="10 Python Tricks That Will Make You a Better Coder" data-author="Divya Nair">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#f97316,#ea580c)">
+                    <i class="fab fa-python text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fab fa-python text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Python</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-orange-100 text-orange-700">Tips & Tricks</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>4 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">10 Python Tricks That Will Make You a Better Coder</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">List comprehensions, generators, decorators and more — Python tricks every serious developer should know.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:40%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">DN</div>
+                            <span class="text-sm text-gray-600 font-medium">Divya Nair</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/python-programming-language/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="ml" data-title="Getting Started with Machine Learning: A Student's Guide" data-author="Aditya Singh">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#ec4899,#be185d)">
+                    <i class="fas fa-robot text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-robot text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Machine Learning</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-pink-100 text-pink-700">ML / AI</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>9 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Getting Started with Machine Learning: A Student's Guide</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">Everything you need to begin your ML journey — prerequisites, tools, datasets, and your first model.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:55%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold">AS</div>
+                            <span class="text-sm text-gray-600 font-medium">Aditya Singh</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/machine-learning/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="dsa" data-title="Graph Algorithms You Must Know for Placements" data-author="Meera Krishnan">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#06b6d4,#0284c7)">
+                    <i class="fas fa-project-diagram text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-project-diagram text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Graphs</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-cyan-100 text-cyan-700">DSA</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>8 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Graph Algorithms You Must Know for Placements</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">BFS, DFS, Dijkstra, Topological Sort — explained clearly with code examples and interview questions.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:70%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">MK</div>
+                            <span class="text-sm text-gray-600 font-medium">Meera Krishnan</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="tips" data-title="How to Stay Consistent with DSA During Exams" data-author="Riya Joshi">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#14b8a6,#0f766e)">
+                    <i class="fas fa-calendar-check text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fas fa-calendar-check text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Consistency</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-teal-100 text-teal-700">Tips & Tricks</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>3 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">How to Stay Consistent with DSA During Exams</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">Practical tips to solve at least one problem a day even during your busiest college semester.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:35%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-teal-400 to-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">RJ</div>
+                            <span class="text-sm text-gray-600 font-medium">Riya Joshi</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/how-to-prepare-for-coding-interviews/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 9 -->
+            <div class="article-card card-hover bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden group" data-cat="placement" data-title="Microsoft Interview: What They Actually Ask in 2026" data-author="Vivek Sharma">
+                <div class="article-img h-48 flex items-center justify-center overflow-hidden relative" style="background:linear-gradient(135deg,#1d4ed8,#1e3a8a)">
+                    <i class="fab fa-microsoft text-white/20 text-8xl absolute"></i>
+                    <div class="relative z-10 text-center text-white">
+                        <i class="fab fa-microsoft text-4xl mb-2 block opacity-80"></i>
+                        <span class="text-sm font-semibold opacity-70">Microsoft</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="tag bg-indigo-100 text-indigo-700">Placement</span>
+                        <span class="text-gray-400 text-xs"><i class="fas fa-clock mr-1"></i>6 min read</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors leading-snug">Microsoft Interview: What They Actually Ask in 2026</h3>
+                    <p class="text-gray-500 text-sm mb-4 leading-relaxed">Decoded the Microsoft SDE hiring process — OA pattern, interview rounds, and tips that actually worked.</p>
+                    <div class="read-bar mb-4"><div class="read-fill" style="width:75%"></div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">VS</div>
+                            <span class="text-sm text-gray-600 font-medium">Vivek Sharma</span>
+                        </div>
+                        <a href="https://www.geeksforgeeks.org/microsoft-interview-experience/" target="_blank" class="text-gfg-green font-semibold text-sm hover:underline">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- No results -->
+        <div id="no-results" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">📭</div>
+            <h3 class="text-2xl font-bold text-gray-700 mb-2">No articles found</h3>
+            <p class="text-gray-500">Try a different search term or category.</p>
+            <button onclick="resetAll()" class="mt-6 px-6 py-3 bg-gfg-green text-white rounded-2xl font-semibold hover:bg-gfg-green-dark transition-colors">Reset Filters</button>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ POPULAR ARTICLES ══════════════════ -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-gray-800 mb-4 inline-block">Popular Articles</h2>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mt-6">The articles our community loves the most — ranked by views and engagement.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0">01</div>
+                <div>
+                    <span class="tag bg-green-100 text-green-700 mb-3 inline-block">DSA</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-gfg-green transition-colors">How to Crack Any DSA Interview: A Complete Roadmap</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>4,280 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>312 likes</span>
+                        <a href="https://www.geeksforgeeks.org/complete-roadmap-to-learn-dsa-from-scratch/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-orange-200 hover:bg-orange-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;background-clip:text;">02</div>
+                <div>
+                    <span class="tag bg-orange-100 text-orange-700 mb-3 inline-block">Placement</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">My Amazon SDE Internship Journey from RIT</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>3,910 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>278 likes</span>
+                        <a href="https://www.geeksforgeeks.org/amazon-interview-experience/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);-webkit-background-clip:text;background-clip:text;">03</div>
+                <div>
+                    <span class="tag bg-purple-100 text-purple-700 mb-3 inline-block">Competitive Prog.</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">Mastering Dynamic Programming: Patterns & Templates</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>3,450 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>241 likes</span>
+                        <a href="https://www.geeksforgeeks.org/dynamic-programming/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);-webkit-background-clip:text;background-clip:text;">04</div>
+                <div>
+                    <span class="tag bg-blue-100 text-blue-700 mb-3 inline-block">Web Dev</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">Build a Portfolio Website in 1 Hour with React</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>2,870 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>195 likes</span>
+                        <a href="https://www.geeksforgeeks.org/reactjs/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-cyan-200 hover:bg-cyan-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0" style="background:linear-gradient(135deg,#06b6d4,#0284c7);-webkit-background-clip:text;background-clip:text;">05</div>
+                <div>
+                    <span class="tag bg-cyan-100 text-cyan-700 mb-3 inline-block">DSA</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-cyan-600 transition-colors">Graph Algorithms You Must Know for Placements</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>2,540 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>183 likes</span>
+                        <a href="https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-3xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50 transition-all group cursor-pointer">
+                <div class="rank-num flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#4338ca);-webkit-background-clip:text;background-clip:text;">06</div>
+                <div>
+                    <span class="tag bg-indigo-100 text-indigo-700 mb-3 inline-block">Placement</span>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">Microsoft Interview: What They Actually Ask in 2026</h3>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1 text-green-400"></i>2,210 views</span>
+                        <span><i class="fas fa-heart mr-1 text-red-400"></i>161 likes</span>
+                        <a href="https://www.geeksforgeeks.org/microsoft-interview-experience/" target="_blank" class="text-gfg-green font-semibold hover:underline ml-auto">Read →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ STUDENT EXPERIENCE BLOGS ══════════════════ -->
+<section class="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Student <span class="bg-gradient-to-r from-gfg-green to-emerald-400 bg-clip-text text-transparent">Experience Blogs</span></h2>
+            <div class="w-14 h-1 bg-gradient-to-r from-gfg-green to-emerald-400 rounded-full mx-auto mb-4"></div>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">Real stories from RIT students — their journey, struggles, and success in placements and coding.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+            <!-- Experience 1 -->
+            <div class="card-hover student-card bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-gfg-green">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-r from-gfg-green to-emerald-500 rounded-2xl flex items-center justify-center font-bold text-white text-xl shadow-lg">AK</div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg">Arjun Kumar</h4>
+                        <p class="text-gray-400 text-sm">3rd Year CSE · GFG Core Member</p>
+                        <div class="flex items-center gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="tag bg-green-500/20 text-green-300 border border-green-500/30 mb-4 inline-block">✅ Placed at Google</span>
+                <p class="text-gray-300 leading-relaxed text-sm mb-5">
+                    "I started solving DSA problems from GFG in my 2nd year with just 30 minutes a day. The structured sheets and topic-wise problems helped me crack Google's SWE interview in 8 months. The GFG RIT club kept me accountable every week."
+                </p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-1"></i>February 2026</span>
+                    <a href="https://www.geeksforgeeks.org/google-interview-experience/" target="_blank" class="text-gfg-green hover:underline font-semibold">Full Story →</a>
+                </div>
+            </div>
+
+            <!-- Experience 2 -->
+            <div class="card-hover student-card bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-orange-400" style="border-left-color:#f97316">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-r from-orange-400 to-amber-500 rounded-2xl flex items-center justify-center font-bold text-white text-xl shadow-lg">RV</div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg">Rahul Verma</h4>
+                        <p class="text-gray-400 text-sm">4th Year CSE · GFG Member</p>
+                        <div class="flex items-center gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="far fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="tag bg-orange-500/20 text-orange-300 border border-orange-500/30 mb-4 inline-block">✅ Amazon SDE Intern</span>
+                <p class="text-gray-300 leading-relaxed text-sm mb-5">
+                    "Amazon's OA seemed scary until I practiced 200+ problems on GFG. The interview corner gave me real experiences from past candidates. The mock sessions organised by GFG RIT were game-changing — I felt genuinely prepared."
+                </p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-1"></i>January 2026</span>
+                    <a href="https://www.geeksforgeeks.org/amazon-interview-experience/" target="_blank" class="text-gfg-green hover:underline font-semibold">Full Story →</a>
+                </div>
+            </div>
+
+            <!-- Experience 3 -->
+            <div class="card-hover student-card bg-gray-800/60 backdrop-blur-sm rounded-3xl p-7 border border-gray-700 hover:border-blue-400" style="border-left-color:#3b82f6">
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center font-bold text-white text-xl shadow-lg">SP</div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg">Sneha Patel</h4>
+                        <p class="text-gray-400 text-sm">3rd Year IT · Web Dev Lead</p>
+                        <div class="flex items-center gap-1 mt-1">
+                            <i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i><i class="fas fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="tag bg-blue-500/20 text-blue-300 border border-blue-500/30 mb-4 inline-block">✅ Microsoft Intern</span>
+                <p class="text-gray-300 leading-relaxed text-sm mb-5">
+                    "I was weak in system design but GFG's resources and the weekly discussion sessions at our club turned it around. I built 3 full-stack projects and documented them well. Microsoft loved my portfolio — preparation really pays off."
+                </p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-1"></i>March 2026</span>
+                    <a href="https://www.geeksforgeeks.org/microsoft-interview-experience/" target="_blank" class="text-gfg-green hover:underline font-semibold">Full Story →</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CTA to Write -->
+        <div class="mt-16 text-center bg-gray-800/50 rounded-3xl p-10 border border-gray-700">
+            <div class="w-16 h-16 bg-gradient-to-r from-gfg-green to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <i class="fas fa-pen-alt text-white text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-3">Share Your Story</h3>
+            <p class="text-gray-400 mb-6 max-w-xl mx-auto">Got placed? Solved a hard problem? Built something cool? Write a blog and inspire your fellow RIT coders!</p>
+            <a href="mailto:gfg.rit.club@gmail.com?subject=Blog Submission"
+               class="inline-flex items-center gap-3 bg-gradient-to-r from-gfg-green to-gfg-green-dark text-white font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition-opacity shadow-lg text-lg">
+                <i class="fas fa-paper-plane"></i> Submit Your Blog
+            </a>
+            <p class="text-gray-500 text-sm mt-4">Send your article to gfg.rit.club@gmail.com — we'll review and publish it!</p>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="bg-gray-900 text-gray-400 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-gfg-green rounded-xl flex items-center justify-center"><i class="fas fa-code text-white text-xl"></i></div>
+                    <span class="text-2xl font-bold text-white">GFG RIT</span>
+                </div>
+                <p class="text-gray-400 leading-relaxed">GeeksforGeeks Campus Club at RIT — Empowering students through coding excellence and community collaboration.</p>
+            </div>
+            <!-- Quick Links -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Quick Links</h4>
+    <ul class="space-y-3">
+        <li>
+            <a href="HOME.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </li>
+        <li>
+            <a href="CHALLENGES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-trophy"></i> Challenges
+            </a>
+        </li>
+        <li>
+            <a href="RESOURCES.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-book"></i> Resources
+            </a>
+        </li>
+        <li>
+            <a href="EVENTS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-calendar-alt"></i> Events
+            </a>
+        </li>
+        <li>
+            <a href="BLOGS.HTML" class="hover:text-gfg-green transition-colors flex items-center gap-2">
+                <i class="fas fa-blog"></i> Blogs
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Contact -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Contact Info</h4>
+    <div class="space-y-3">
+        <p class="flex items-center gap-2">
+            <i class="fas fa-envelope text-gfg-green"></i> gfg.rit.club@gmail.com
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-gfg-green"></i> RIT Campus, Tech City
+        </p>
+        <p class="flex items-center gap-2">
+            <i class="fas fa-phone text-gfg-green"></i> +91 98765 43210
+        </p>
+    </div>
+</div>
+
+<!-- Social -->
+<div>
+    <h4 class="text-xl font-bold text-white mb-6">Follow Us</h4>
+    <div class="flex flex-col space-y-3">
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-linkedin text-xl"></i> LinkedIn
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-instagram text-xl"></i> Instagram
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-github text-xl"></i> GitHub
+        </a>
+        <a href="#" class="flex items-center gap-3 hover:text-gfg-green transition-colors">
+            <i class="fab fa-discord text-xl"></i> Discord
+        </a>
+    </div>
+</div>
+</div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+            <p>&copy; 2026 GFG RIT Community. Built with ❤️ for student developers. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ══════════════════ JAVASCRIPT ══════════════════ -->
+<script>
+    // Mobile menu
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+    document.getElementById('mobile-close-btn').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.add('hidden');
+    });
+
+    // Quick search tags
+    function setSearch(term) {
+        document.getElementById('search-input').value = term;
+        applyFilters();
+        document.getElementById('latest').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Search button
+    document.getElementById('search-btn').addEventListener('click', () => {
+        applyFilters();
+        document.getElementById('latest').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Press Enter to search
+    document.getElementById('search-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            applyFilters();
+            document.getElementById('latest').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+
+    let activeCategory = 'all';
+
+    function filterCategory(cat) {
+        activeCategory = cat;
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        document.querySelector(`.cat-pill[data-cat="${cat}"]`).classList.add('active');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const term = document.getElementById('search-input').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.article-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const catMatch  = activeCategory === 'all' || card.dataset.cat === activeCategory;
+            const title     = card.dataset.title.toLowerCase();
+            const author    = card.dataset.author.toLowerCase();
+            const termMatch = !term || title.includes(term) || author.includes(term) || card.dataset.cat.includes(term);
+
+            if (catMatch && termMatch) {
+                card.classList.remove('hidden-card');
+                visible++;
+            } else {
+                card.classList.add('hidden-card');
+            }
+        });
+
+        const noResults = document.getElementById('no-results');
+        visible === 0 ? noResults.classList.remove('hidden') : noResults.classList.add('hidden');
+    }
+
+    function resetAll() {
+        activeCategory = 'all';
+        document.getElementById('search-input').value = '';
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+        document.querySelectorAll('.article-card').forEach(c => c.classList.remove('hidden-card'));
+        document.getElementById('no-results').classList.add('hidden');
+    }
+</script>
+</body>
+</html>

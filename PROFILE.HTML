@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeeksforGeeks · Student profile</title>
+    <!-- Tailwind + Inter + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #f9fafb; } /* bg-gray-50 */
+        .hover-glow:hover { box-shadow: 0 20px 30px -10px rgba(5, 150, 105, 0.3); }
+        .card-lift { transition: all 0.2s ease; }
+        .card-lift:hover { transform: translateY(-4px); box-shadow: 0 25px 35px -12px rgba(0,0,0,0.15); }
+        .badge-hover { transition: all 0.2s; }
+        .badge-hover:hover { filter: brightness(1.05); transform: scale(1.02); }
+        .gradient-btn { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; transition: all 0.2s; }
+        .gradient-btn:hover { background: linear-gradient(135deg, #059669 0%, #065f46 100%); transform: scale(1.02); box-shadow: 0 12px 18px -10px #04785770; }
+        .navbar-link { transition: all 0.3s ease; }
+        .navbar-link:hover { color: #16a34a !important; transform: translateY(-2px); }
+
+        .nav-active {
+            position: relative;
+        }
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 2px;
+        }
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .leaderboard-row {
+            transition: all 0.2s;
+        }
+        .leaderboard-row:hover {
+            background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%);
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 antialiased">
+
+    <!-- ========== MODALS ========== -->
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal-overlay">
+        <div class="modal-content bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-6 rounded-t-3xl">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</h2>
+                    <button class="close-modal text-white/80 hover:text-white text-3xl">&times;</button>
+                </div>
+            </div>
+            <div class="p-6 space-y-5">
+                <div class="flex items-center gap-6">
+                    <div class="relative">
+                        <img src="https://ui-avatars.com/api/?name=Aiswaryaa+Babu&size=100&background=10b981&color=fff&bold=true" class="w-24 h-24 rounded-full border-4 border-emerald-100">
+                        <button class="absolute bottom-0 right-0 bg-emerald-500 text-white p-2 rounded-full hover:bg-emerald-600"><i class="fa-solid fa-camera"></i></button>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                        <input type="text" value="Aiswaryaa Babu" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-300 outline-none">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">College</label>
+                        <input type="text" value="Rajalakshmi Institute of Technology" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-300 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <input type="text" value="Student Developer" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-300 outline-none">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                    <textarea rows="3" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-300 outline-none">Passionate about Web Development and Problem Solving. Loves building full‑stack projects and contributing to open source.</textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Skills (comma separated)</label>
+                    <input type="text" value="Python, JavaScript, React, DSA" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-300 outline-none">
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button class="gradient-btn px-6 py-2.5 rounded-xl font-semibold flex-1">Save Changes</button>
+                    <button class="close-modal px-6 py-2.5 rounded-xl border border-gray-300 font-semibold hover:bg-gray-50">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal-overlay">
+        <div class="modal-content bg-white rounded-3xl shadow-2xl w-full max-w-4xl mx-4">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-6 rounded-t-3xl">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-ranking-star"></i> Leaderboard · Top 25 Students</h2>
+                    <button class="close-modal text-white/80 hover:text-white text-3xl">&times;</button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="flex gap-2 mb-4 text-sm text-gray-500">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-crown text-yellow-500"></i> Top performers</span>
+                    <span class="mx-2">•</span>
+                    <span>Updated monthly</span>
+                </div>
+                <div class="overflow-y-auto max-h-[60vh]">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 sticky top-0">
+                            <tr class="text-left text-sm text-gray-600">
+                                <th class="px-4 py-3 rounded-l-xl">Rank</th>
+                                <th class="px-4 py-3">Student</th>
+                                <th class="px-4 py-3">Points</th>
+                                <th class="px-4 py-3">Level</th>
+                                <th class="px-4 py-3 rounded-r-xl">Badge</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Leaderboard rows generated by JS will go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-code text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">GFG RIT</h1>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="HOME.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Home</a>
+                <a href="CHALLENGES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Challenges</a>
+                <a href="RESOURCES.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Resources</a>
+                <a href="EVENTS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Events</a>
+                <a href="BLOGS.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Blogs</a>
+                <a href="PROFILE.HTML" class="px-4 py-3 text-green-600 font-semibold transition-all duration-300 rounded-xl bg-green-50 shadow-sm border border-green-200 nav-active">My Profile</a>
+                <a href="LOGIN.HTML" class="navbar-link px-4 py-3 text-gray-700 hover:text-green-600 font-medium transition-all duration-300 rounded-xl hover:bg-green-50">Logout</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars text-xl text-gray-700"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden pb-6 space-y-2 border-t border-gray-200 pt-4">
+            <a href="HOME.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Home</a>
+            <a href="CHALLENGES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Challenges</a>
+            <a href="RESOURCES.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Resources</a>
+            <a href="EVENTS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Events</a>
+            <a href="BLOGS.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Blogs</a>
+            <a href="PROFILE.HTML" class="block px-4 py-3 bg-green-50 text-green-600 font-semibold rounded-xl border border-green-200 shadow-sm">My Profile</a>
+            <a href="LOGIN.HTML" class="block px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl font-medium transition-all">Logout</a>
+        </div>
+    </div>
+</nav>
+    <!-- ========== MAIN CONTAINER ========== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- PROFILE HEADER -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-2xl p-6 md:p-8">
+            <i class="fa-solid fa-code absolute right-4 bottom-0 text-8xl opacity-10"></i>
+            <i class="fa-regular fa-star absolute top-4 left-1/4 text-3xl opacity-20"></i>
+            
+            <div class="relative flex flex-col md:flex-row items-center md:items-start gap-6">
+                <div class="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
+                    <img src="https://ui-avatars.com/api/?name=Aiswaryaa+Babu&size=150&background=ffffff&color=10b981&bold=true" alt="profile" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-3xl md:text-4xl font-bold">Aiswaryaa Babu</h1>
+                    <p class="text-emerald-50 text-lg flex items-center justify-center md:justify-start gap-2 mt-1"><i class="fa-solid fa-graduation-cap"></i> CSE Student · Rajalakshmi Institute of Technology</p>
+                    <p class="text-white/80 max-w-xl mt-2">Passionate about Web Development and Problem Solving. Loves building full‑stack projects and contributing to open source.</p>
+                    
+                    <div class="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
+                        <span class="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/30"><i class="fa-brands fa-python mr-1"></i>Python</span>
+                        <span class="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/30"><i class="fa-brands fa-js mr-1"></i>JavaScript</span>
+                        <span class="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/30"><i class="fa-brands fa-react mr-1"></i>React</span>
+                        <span class="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/30"><i class="fa-solid fa-code mr-1"></i>DSA</span>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row md:flex-col gap-3 mt-4 md:mt-0">
+                    <button id="editProfileBtn" class="gradient-btn px-6 py-2.5 rounded-xl font-semibold shadow-lg text-sm flex items-center gap-2 justify-center"><i class="fa-regular fa-pen-to-square"></i> Edit Profile</button>
+                    <button id="leaderboardBtn" class="bg-white/20 backdrop-blur-sm border border-white/40 px-6 py-2.5 rounded-xl font-semibold hover:bg-white/30 transition flex items-center gap-2 justify-center"><i class="fa-solid fa-ranking-star"></i> View Leaderboard Rank</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS CARDS -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="card-lift bg-white rounded-3xl shadow-xl p-5 flex items-center gap-4 hover-glow transition-all">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-xl shadow-lg">🔥</div>
+                <div><p class="text-gray-500 text-sm">Challenges Solved</p><p class="text-3xl font-bold text-gray-800">34</p></div>
+            </div>
+            <div class="card-lift bg-white rounded-3xl shadow-xl p-5 flex items-center gap-4 hover-glow transition-all">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-xl shadow-lg">🏆</div>
+                <div><p class="text-gray-500 text-sm">Points Earned</p><p class="text-3xl font-bold text-gray-800">420</p></div>
+            </div>
+            <div class="card-lift bg-white rounded-3xl shadow-xl p-5 flex items-center gap-4 hover-glow transition-all">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-xl shadow-lg">📈</div>
+                <div><p class="text-gray-500 text-sm">Current Rank</p><p class="text-3xl font-bold text-gray-800">#56</p></div>
+            </div>
+            <div class="card-lift bg-white rounded-3xl shadow-xl p-5 flex items-center gap-4 hover-glow transition-all">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-xl shadow-lg">⚡</div>
+                <div><p class="text-gray-500 text-sm">Coding Streak</p><p class="text-3xl font-bold text-gray-800">5 Days</p></div>
+            </div>
+        </section>
+
+        <!-- CHALLENGES TABLE + EVENTS -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-3xl shadow-xl p-5 md:p-6 card-lift">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-code text-emerald-600"></i> Solved Challenges</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-gray-500 border-b border-gray-100">
+                                <tr><th class="text-left py-3">Challenge</th><th class="text-left">Difficulty</th><th class="text-left">Date Solved</th><th class="text-left">Action</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-50 hover:bg-emerald-50/30 transition"><td class="py-3 font-medium">Two Sum</td><td><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Easy</span></td><td>Mar 10</td><td><button class="text-emerald-600 hover:underline text-sm font-medium">View <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></button></td></tr>
+                                <tr class="border-b border-gray-50 hover:bg-emerald-50/30 transition"><td class="py-3 font-medium">Binary Search</td><td><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Easy</span></td><td>Mar 11</td><td><button class="text-emerald-600 hover:underline text-sm font-medium">View <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></button></td></tr>
+                                <tr class="border-b border-gray-50 hover:bg-emerald-50/30 transition"><td class="py-3 font-medium">Graph Traversal</td><td><span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-semibold">Medium</span></td><td>Mar 12</td><td><button class="text-emerald-600 hover:underline text-sm font-medium">View <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></button></td></tr>
+                                <tr class="hover:bg-emerald-50/30 transition"><td class="py-3 font-medium">Dynamic Programming</td><td><span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs font-semibold">Hard</span></td><td>Mar 14</td><td><button class="text-emerald-600 hover:underline text-sm font-medium">View <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fa-regular fa-calendar-check text-emerald-600"></i> Events Participated</h2>
+                <div class="grid gap-4">
+                    <div class="bg-white rounded-2xl shadow-md p-4 flex items-start gap-3 card-lift hover:shadow-xl border border-gray-50">
+                        <div class="bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-xl w-10 h-10 flex items-center justify-center text-lg">📅</div>
+                        <div class="flex-1"><p class="font-semibold">DSA Bootcamp</p><p class="text-xs text-gray-500">15 April 2026</p></div>
+                        <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium">Completed</span>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-md p-4 flex items-start gap-3 card-lift hover:shadow-xl border border-gray-50">
+                        <div class="bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-xl w-10 h-10 flex items-center justify-center text-lg">💻</div>
+                        <div class="flex-1"><p class="font-semibold">Web Dev Workshop</p><p class="text-xs text-gray-500">20 April 2026</p></div>
+                        <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">Registered</span>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-md p-4 flex items-start gap-3 card-lift hover:shadow-xl border border-gray-50">
+                        <div class="bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-xl w-10 h-10 flex items-center justify-center text-lg">🏁</div>
+                        <div class="flex-1"><p class="font-semibold">Coding Contest</p><p class="text-xs text-gray-500">25 April 2026</p></div>
+                        <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-medium">Rank 12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <section>
+            <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2"><i class="fa-solid fa-medal text-emerald-600"></i> Achievements & Badges</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-2xl shadow-lg p-5 text-center card-lift hover-glow border border-gray-50 badge-hover"><div class="text-4xl mb-2">🥇</div><p class="font-semibold text-sm">First Challenge</p><p class="text-xs text-gray-400">Solved</p></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 text-center card-lift hover-glow border border-gray-50 badge-hover"><div class="text-4xl mb-2">🔥</div><p class="font-semibold text-sm">7‑Day Streak</p><p class="text-xs text-gray-400">Coding streak</p></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 text-center card-lift hover-glow border border-gray-50 badge-hover"><div class="text-4xl mb-2">💡</div><p class="font-semibold text-sm">Problem Solver</p><p class="text-xs text-gray-400">10 problems</p></div>
+                <div class="bg-white rounded-2xl shadow-lg p-5 text-center card-lift hover-glow border border-gray-50 badge-hover"><div class="text-4xl mb-2">🏆</div><p class="font-semibold text-sm">Contest</p><p class="text-xs text-gray-400">Participant</p></div>
+            </div>
+        </section>
+
+        <!-- ACTIVITY TIMELINE -->
+        <section class="bg-white rounded-3xl shadow-xl p-6 card-lift">
+            <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2"><i class="fa-regular fa-clock text-emerald-600"></i> Recent activity</h2>
+            <div class="space-y-5">
+                <div class="flex gap-4 relative">
+                    <div class="relative"><div class="w-5 h-5 bg-emerald-500 rounded-full border-4 border-emerald-100 shadow-sm z-10 relative"></div><div class="absolute top-5 left-2.5 w-0.5 h-12 bg-emerald-100"></div></div>
+                    <div class="pb-5"><p class="font-medium">✔ Solved <span class="text-emerald-700 font-semibold">"Two Sum"</span> challenge</p><span class="text-xs text-gray-400">Today, 10:32 AM</span></div>
+                </div>
+                <div class="flex gap-4 relative">
+                    <div class="relative"><div class="w-5 h-5 bg-emerald-500 rounded-full border-4 border-emerald-100"></div><div class="absolute top-5 left-2.5 w-0.5 h-12 bg-emerald-100"></div></div>
+                    <div class="pb-5"><p class="font-medium">✔ Joined <span class="text-emerald-700 font-semibold">Hackathon 2026</span></p><span class="text-xs text-gray-400">Yesterday</span></div>
+                </div>
+                <div class="flex gap-4 relative">
+                    <div class="relative"><div class="w-5 h-5 bg-emerald-500 rounded-full border-4 border-emerald-100"></div><div class="absolute top-5 left-2.5 w-0.5 h-12 bg-emerald-100"></div></div>
+                    <div class="pb-5"><p class="font-medium">🏅 Earned <span class="text-emerald-700 font-semibold">"Problem Solver"</span> badge</p><span class="text-xs text-gray-400">3 days ago</span></div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-5 h-5 bg-emerald-500 rounded-full border-4 border-emerald-100"></div>
+                    <div><p class="font-medium">✔ Participated in <span class="text-emerald-700 font-semibold">Weekly Coding Contest</span></p><span class="text-xs text-gray-400">5 days ago</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-400 border-t mt-10">✨ GeeksforGeeks Student Community · profile dashboard</footer>
+
+    <script>
+        (function() {
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    if (icon.classList.contains('fa-bars')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-xmark');
+                    } else {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+
+            // Modal functionality
+            const editModal = document.getElementById('editProfileModal');
+            const leaderboardModal = document.getElementById('leaderboardModal');
+            const editBtn = document.getElementById('editProfileBtn');
+            const leaderboardBtn = document.getElementById('leaderboardBtn');
+            const closeBtns = document.querySelectorAll('.close-modal');
+
+            // Generate leaderboard data
+            function generateLeaderboardData() {
+                const firstNames = ['Aarav', 'Vivaan', 'Aditya', 'Vihaan', 'Arjun', 'Sai', 'Ishaan', 'Reyansh', 'Ayaan', 'Krishna', 'Shaurya', 'Dhruv', 'Kabir', 'Rudra', 'Rohan', 'Ansh', 'Samarth', 'Aryan', 'Yash', 'Dev', 'Atharv', 'Raghav', 'Pranav', 'Om', 'Shiv'];
+                const lastNames = ['Sharma', 'Verma', 'Patel', 'Kumar', 'Singh', 'Reddy', 'Gupta', 'Joshi', 'Malhotra', 'Mehta', 'Choudhary', 'Kapoor', 'Desai', 'Bose', 'Sen', 'Das', 'Ghosh', 'Chatterjee', 'Mukherjee', 'Banerjee'];
+                const levels = ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'];
+                const badges = ['🥇 Gold', '🔥 Streak', '💡 Solver', '🏆 Champ', '⭐ Rising', '⚡ Pro', '🎯 Sharpshooter', '🧠 Genius'];
+                
+                let data = [];
+                for (let i = 1; i <= 25; i++) {
+                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    const points = Math.floor(Math.random() * 1500) + 500;
+                    const level = levels[Math.floor(Math.random() * levels.length)];
+                    const badge = badges[Math.floor(Math.random() * badges.length)];
+                    
+                    let rankIcon = '';
+                    if (i === 1) rankIcon = '👑 ';
+                    else if (i === 2) rankIcon = '🥈 ';
+                    else if (i === 3) rankIcon = '🥉 ';
+                    
+                    data.push({
+                        rank: i,
+                        name: `${firstName} ${lastName}`,
+                        points: points,
+                        level: level,
+                        badge: badge,
+                        rankIcon: rankIcon
+                    });
+                }
+                // Sort by points (highest first) and reassign ranks
+                data.sort((a, b) => b.points - a.points);
+                data = data.map((item, index) => {
+                    let rankIcon = '';
+                    if (index === 0) rankIcon = '👑 ';
+                    else if (index === 1) rankIcon = '🥈 ';
+                    else if (index === 2) rankIcon = '🥉 ';
+                    return {
+                        ...item,
+                        rank: index + 1,
+                        rankIcon: rankIcon
+                    };
+                });
+                return data;
+            }
+
+            // Populate leaderboard
+            function populateLeaderboard() {
+                const tbody = document.querySelector('#leaderboardModal tbody');
+                if (!tbody) return;
+                
+                const data = generateLeaderboardData();
+                tbody.innerHTML = '';
+                
+                data.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.className = 'leaderboard-row';
+                    row.innerHTML = `
+                        <td class="px-4 py-3 font-medium">
+                            ${student.rankIcon}${student.rank === 1 ? '🥇' : student.rank === 2 ? '🥈' : student.rank === 3 ? '🥉' : '#' + student.rank}
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <img src="https://ui-avatars.com/api/?name=${student.name.replace(' ', '+')}&size=32&background=10b981&color=fff" class="w-8 h-8 rounded-full">
+                                <span class="font-medium">${student.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 font-semibold text-emerald-600">${student.points}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium 
+                                ${student.level === 'Beginner' ? 'bg-green-100 text-green-700' : 
+                                  student.level === 'Intermediate' ? 'bg-blue-100 text-blue-700' : 
+                                  student.level === 'Advanced' ? 'bg-orange-100 text-orange-700' : 
+                                  student.level === 'Expert' ? 'bg-purple-100 text-purple-700' : 
+                                  'bg-yellow-100 text-yellow-700'}">
+                                ${student.level}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="flex items-center gap-1"><span class="text-lg">${student.badge.split(' ')[0]}</span> ${student.badge.split(' ')[1]}</span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            // Open modals
+            if (editBtn) {
+                editBtn.addEventListener('click', () => {
+                    editModal.classList.add('active');
+                });
+            }
+
+            if (leaderboardBtn) {
+                leaderboardBtn.addEventListener('click', () => {
+                    populateLeaderboard();
+                    leaderboardModal.classList.add('active');
+                });
+            }
+
+            // Close modals
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    editModal.classList.remove('active');
+                    leaderboardModal.classList.remove('active');
+                });
+            });
+
+            // Cancel button in edit modal
+const cancelBtn = document.querySelector('#editProfileModal .close-modal:not(.gradient-btn)');
+if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+        editModal.classList.remove('active');
+    });
+}
+
+            // Save profile changes
+const saveProfileBtn = document.querySelector('#editProfileModal .gradient-btn');
+if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', function() {
+        // Get values from form
+        const name = document.querySelector('#editProfileModal input[type="text"]').value;
+        const college = document.querySelectorAll('#editProfileModal input[type="text"]')[1].value;
+        const role = document.querySelectorAll('#editProfileModal input[type="text"]')[2].value;
+        const bio = document.querySelector('#editProfileModal textarea').value;
+        const skills = document.querySelectorAll('#editProfileModal input[type="text"]')[3].value;
+        
+        // Update profile header with new values
+        document.querySelector('.text-3xl.md\\:text-4xl.font-bold').textContent = name;
+        document.querySelector('.text-emerald-50.text-lg').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${college} · ${role}`;
+        document.querySelector('.text-white/80.max-w-xl').textContent = bio;
+        
+        // Update skills badges
+        const skillsContainer = document.querySelector('.flex.flex-wrap.gap-2.mt-4');
+        const skillArray = skills.split(',').map(s => s.trim());
+        skillsContainer.innerHTML = '';
+        skillArray.forEach(skill => {
+            const icon = skill.toLowerCase().includes('python') ? 'fa-brands fa-python' : 
+                        skill.toLowerCase().includes('javascript') ? 'fa-brands fa-js' :
+                        skill.toLowerCase().includes('react') ? 'fa-brands fa-react' :
+                        'fa-solid fa-code';
+            skillsContainer.innerHTML += `
+                <span class="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium border border-white/30">
+                    <i class="${icon} mr-1"></i>${skill}
+                </span>
+            `;
+        });
+        
+        // Show success message and close modal
+        alert('✅ Profile updated successfully!');
+        editModal.classList.remove('active');
+    });
+}
+
+            // Close on overlay click
+            [editModal, leaderboardModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === "#") return;
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <style>
+        .active-nav::after { height: 3px; background: #10b981; border-radius: 2px; }
+        .active-nav { color: #047857; }
+        .hover-glow:hover { box-shadow: 0 20px 30px -10px rgba(4, 120, 87, 0.2); }
+    </style>
+</body>
+</html>
